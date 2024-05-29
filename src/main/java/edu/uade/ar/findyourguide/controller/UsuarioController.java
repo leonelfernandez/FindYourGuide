@@ -30,11 +30,11 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuarios/{usuarioId}")
-    public ResponseEntity<?> getCliente(@PathVariable int clienteId) {
-        Usuario usuario = usuarioService.findById(clienteId);
+    public ResponseEntity<?> getUsuario(@PathVariable int usuarioId) {
+        Usuario usuario = usuarioService.findById(usuarioId);
 
         if (usuario == null) {
-            String mensaje = "Cliente no encontrado con ID: " + clienteId;
+            String mensaje = "Cliente no encontrado con ID: " + usuarioId;
             return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND);
         }
 
@@ -42,11 +42,11 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
     @GetMapping("/usuariosParam")
-    public ResponseEntity<?> getClienteParam(@RequestParam("clienteId") int clienteId) {
-        Usuario usuario = usuarioService.findById(clienteId);
+    public ResponseEntity<?> getUsuarioParam(@RequestParam("usuarioId") int usuarioId) {
+        Usuario usuario = usuarioService.findById(usuarioId);
 
         if (usuario == null) {
-            String mensaje = "Cliente no encontrado con ID: " + clienteId;
+            String mensaje = "Usuario no encontrado con ID: " + usuarioId;
             return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND);
         }
 
@@ -55,7 +55,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuarios")
-    public ResponseEntity<UsuarioDTO> addCliente(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<UsuarioDTO> addUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         Usuario usuario = convertToEntity(usuarioDTO);
 
         usuarioService.save(usuario);
@@ -66,38 +66,38 @@ public class UsuarioController {
     }
 
     @PutMapping("/usuarios/{usuarioId}")
-    public ResponseEntity<?> updateCliente(@PathVariable int clienteId, @RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuarioOld = usuarioService.findById(clienteId);
+    public ResponseEntity<?> updateUsuario(@PathVariable int usuarioId, @RequestBody UsuarioDTO usuarioDTO) {
+        Usuario usuarioOld = usuarioService.findById(usuarioId);
 
         if (usuarioOld == null) {
-            String mensaje = "Cliente no encontrado con ID: " + clienteId;
+            String mensaje = "Usuario no encontrado con ID: " + usuarioId;
             return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND);
         }
 
         Usuario usuarioToUpdate = convertToEntity(usuarioDTO);
-        usuarioService.update(clienteId, usuarioToUpdate);
+        usuarioService.update(usuarioId, usuarioToUpdate);
 
-        UsuarioDTO clienteUpdatedDTO = convertToDTO(usuarioToUpdate);
-        return new ResponseEntity<>(clienteUpdatedDTO, HttpStatus.OK);
+        UsuarioDTO usuarioUpdatedDTO = convertToDTO(usuarioToUpdate);
+        return new ResponseEntity<>(usuarioUpdatedDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("usuarios/{usuarioId}")
-    public ResponseEntity<String> deleteCliente(@PathVariable int clienteId) {
-        Usuario usuario = usuarioService.findById(clienteId);
+    public ResponseEntity<String> deleteUsuario(@PathVariable int usuarioId) {
+        Usuario usuario = usuarioService.findById(usuarioId);
 
         if (usuario == null) {
-            String mensaje = "Cliente no encontrado con ID: " + clienteId;
+            String mensaje = "Usuario no encontrado con ID: " + usuarioId;
             return new ResponseEntity<>(mensaje, HttpStatus.NOT_FOUND);
         }
 
-        usuarioService.deleteById(clienteId);
+        usuarioService.deleteById(usuarioId);
 
-        String mensaje = "Cliente eliminado [clienteID: " + clienteId + "]";
+        String mensaje = "Usuario eliminado [usuarioID: " + usuarioId + "]";
         return new ResponseEntity<>(mensaje, HttpStatus.OK);
     }
 
     /**
-     * Método auxiliar para convertir a ClienteDTO
+     * Método auxiliar para convertir a UsuarioDTO
      * @param usuario
      * @return
      */
@@ -107,7 +107,7 @@ public class UsuarioController {
 //    }
 
     /**
-     * Método auxiliar para convertir a Cliente
+     * Método auxiliar para convertir a Usuario
      * @param usuarioDTO
      * @return
      */
