@@ -1,4 +1,4 @@
-package edu.uade.ar.findyourguide.entities;
+package edu.uade.ar.findyourguide.entity;
 import java.util.ArrayList;
 import java.util.List;
 

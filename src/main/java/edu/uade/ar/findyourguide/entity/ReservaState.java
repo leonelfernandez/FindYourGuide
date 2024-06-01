@@ -1,4 +1,4 @@
-package edu.uade.ar.findyourguide.entities;
+package edu.uade.ar.findyourguide.entity;
 
 
 public abstract class ReservaState {

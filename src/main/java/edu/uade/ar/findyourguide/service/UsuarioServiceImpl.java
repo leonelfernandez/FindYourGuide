@@ -1,6 +1,6 @@
 package edu.uade.ar.findyourguide.service;
 
-import edu.uade.ar.findyourguide.entities.Usuario;
+import edu.uade.ar.findyourguide.entity.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
