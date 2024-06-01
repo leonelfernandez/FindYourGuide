@@ -1,4 +1,4 @@
-package edu.uade.ar.findyourguide.model.entity.dto;
+package edu.uade.ar.findyourguide.entities.dto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

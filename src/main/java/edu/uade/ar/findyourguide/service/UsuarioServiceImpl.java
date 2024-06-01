@@ -1,21 +1,13 @@
 package edu.uade.ar.findyourguide.service;
 
-import edu.uade.ar.findyourguide.model.dao.UsuarioDAO;
-import edu.uade.ar.findyourguide.model.entity.Usuario;
+import edu.uade.ar.findyourguide.entities.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static edu.uade.ar.findyourguide.util.Path.getPathOutModel;
-
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
 
-    private UsuarioDAO usuarioDAO;
-
-    public UsuarioServiceImpl() throws Exception {
-        this.usuarioDAO = new UsuarioDAO(Usuario.class, getPathOutModel("Usuario"));
-    }
 
     @Override
     public List<Usuario> findAll() {

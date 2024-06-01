@@ -1,6 +1,6 @@
 package edu.uade.ar.findyourguide.service;
 
-import edu.uade.ar.findyourguide.model.entity.Usuario;
+import edu.uade.ar.findyourguide.entities.Usuario;
 
 import java.util.List;
 
