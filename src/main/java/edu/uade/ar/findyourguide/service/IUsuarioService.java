@@ -1,19 +1,22 @@
 package edu.uade.ar.findyourguide.service;
 
-import edu.uade.ar.findyourguide.entity.Usuario;
+import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IUsuarioService {
-    public List<Usuario> findAll();
+    public List<UsuarioEntity> findAll();
 
-    public Usuario findById(int id);
+    public Optional<UsuarioEntity> findById(Long id);
 
-    public void save(Usuario usuario);
+    public UsuarioEntity save(UsuarioEntity usuario);
 
-    public void update(int clienteId, Usuario usuario);
+    public UsuarioEntity partialUpdate(Long clienteId, UsuarioEntity usuario);
 
-    public void deleteById(int id);
+    public void deleteById(Long id);
+
+    public boolean isExists(Long id);
 
 
 }

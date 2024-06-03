@@ -1,9 +1,7 @@
-version: '3.1'
-
 services:
 
   db:
-    image: findyourguide
+    image: postgres
     ports:
       - "5432:5432"
     restart: always
