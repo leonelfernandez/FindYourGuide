@@ -12,8 +12,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class TuristaEntity extends UsuarioEntity {
 
-    public TuristaEntity(String nombre, String apellido, String email, String password, String telefono) {
-        super(nombre, apellido, email, password, telefono);
+    public TuristaEntity(String nombre, String apellido, String email, String password, String telefono, String sexo, Integer dni, String foto) {
+        super(nombre, apellido, sexo, dni, email, password, telefono, foto);
     }
 
 

@@ -8,7 +8,6 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @SuperBuilder
@@ -23,8 +22,8 @@ public class GuiaEntity extends UsuarioEntity {
     @ManyToMany
     private List<IdiomaEntity> idiomas;
 
-    public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<CiudadEntity> ciudades, List<ServicioEntity> serviciosOfrecidos) {
-        super(nombre, apellido, email, password, telefono);
+    public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<CiudadEntity> ciudades, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni) {
+        super(nombre, apellido, sexo, dni, email, password, telefono, foto);
         this.credencial = credencial;
         this.ciudades = ciudades;
         this.serviciosOfrecidos = serviciosOfrecidos;

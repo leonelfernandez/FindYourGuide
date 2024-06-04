@@ -18,6 +18,7 @@ import java.io.Serializable;
 public abstract class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_id_seq")
+    @SequenceGenerator(name = "usuario_id_seq", sequenceName = "usuario_id_seq",  allocationSize=1)
     private Long id;
     private String nombre;
     private String apellido;
@@ -29,11 +30,14 @@ public abstract class UsuarioEntity {
     private String foto;
 
 
-    public UsuarioEntity(String nombre, String apellido, String email, String password, String telefono) {
+    public UsuarioEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto) {
         this.nombre = nombre;
         this.apellido = apellido;
+        this.sexo = sexo;
+        this.dni = dni;
         this.email = email;
         this.password = password;
         this.telefono = telefono;
+        this.foto = foto;
     }
 }
