@@ -8,7 +8,6 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "turistas")
 public class TuristaEntity extends UsuarioEntity {
 
     public TuristaEntity(String nombre, String apellido, String email, String password, String telefono) {

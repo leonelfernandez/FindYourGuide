@@ -4,12 +4,13 @@ import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.UsuarioDTO;
 import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UsuarioMapperImpl implements Mapper<UsuarioEntity, UsuarioDTO> {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public UsuarioMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;

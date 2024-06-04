@@ -2,6 +2,7 @@ package edu.uade.ar.findyourguide.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "paises")
 @Entity
+@Builder
 public class PaisEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pais_id_seq")
