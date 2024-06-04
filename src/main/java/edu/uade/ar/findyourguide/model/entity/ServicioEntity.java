@@ -6,17 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@Table(name = "paises")
 @Entity
-public class PaisEntity {
+@Table(name = "servicios")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class ServicioEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pais_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "servicios_id_seq")
     private Long id;
+
     private String nombre;
 
-    public PaisEntity(Long id) {
-        this.id = id;
-    }
 }

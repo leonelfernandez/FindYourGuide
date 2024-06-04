@@ -5,16 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 @Table(name = "usuarios")
-public class UsuarioEntity {
+public abstract class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_id_seq")
     private Long id;

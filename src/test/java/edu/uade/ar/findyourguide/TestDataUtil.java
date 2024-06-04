@@ -1,15 +1,28 @@
 package edu.uade.ar.findyourguide;
 
-import edu.uade.ar.findyourguide.model.dto.UsuarioDTO;
-import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
+import edu.uade.ar.findyourguide.model.dto.TuristaDTO;
+import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
+import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
+import edu.uade.ar.findyourguide.model.entity.*;
+
+import java.util.ArrayList;
 
 public final class TestDataUtil {
 
         private TestDataUtil(){
         }
 
-        public static UsuarioEntity createTestUsuarioEntityA() {
-            return UsuarioEntity.builder()
+
+        public static GuiaEntity createTestGuiaEntityA() {
+            ArrayList<CiudadEntity> ciudades = new ArrayList<>();
+            ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+            ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
+
+            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+            servicioEntities.add(ServicioEntity.builder().id(1L).nombre("TourGrupal").build());
+            idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
+
+            return GuiaEntity.builder()
                     .id(1L)
                     .nombre("Leonel")
                     .sexo("Masculino")
@@ -19,11 +32,23 @@ public final class TestDataUtil {
                     .password("123456")
                     .telefono("152222-3333")
                     .email("pepepaleta@gmail.com")
+                    .puntajePromedio(4.5f)
+                    .credencial("Credecial")
+                    .serviciosOfrecidos(servicioEntities)
+                    .ciudades(ciudades)
+                    .idiomas(idiomas)
                     .build();
         }
 
-        public static UsuarioDTO createTestUsuarioDTOA() {
-            return UsuarioDTO.builder()
+        public static GuiaDTO createTestGuiaDTOA() {
+            ArrayList<CiudadEntity> ciudades = new ArrayList<>();
+            ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+            ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
+
+            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+            servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+            idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
+            return GuiaDTO.builder()
                     .id(1L)
                     .nombre("Leonel")
                     .sexo("Masculino")
@@ -33,11 +58,70 @@ public final class TestDataUtil {
                     .password("123456")
                     .telefono("152222-3333")
                     .email("pepepaleta@gmail.com")
+                    .puntajePromedio(4.5f)
+                    .credencial("Credecial")
+                    .serviciosOfrecidos(servicioEntities)
+                    .ciudades(ciudades)
+                    .idiomas(idiomas)
                     .build();
         }
 
-        public static UsuarioEntity createTestAuthorB() {
-            return UsuarioEntity.builder()
+    public static GuiaEntity createTestGuiaEntityB() {
+        ArrayList<CiudadEntity> ciudades = new ArrayList<>();
+        ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+        ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
+
+        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+        servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+        idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
+        return GuiaEntity.builder()
+                .id(1L)
+                .nombre("Rocio")
+                .sexo("Femenino")
+                .apellido("Doria")
+                .dni(12345678)
+                .foto("https://www.google.com/foto.jpg")
+                .password("123456")
+                .telefono("152222-3333")
+                .email("pepepaleta123@gmail.com")
+                .puntajePromedio(4.5f)
+                .credencial("Credecial")
+                .serviciosOfrecidos(servicioEntities)
+                .ciudades(ciudades)
+                .idiomas(idiomas)
+                .build();
+    }
+
+    public static GuiaDTO createTestGuiaDTOB() {
+        ArrayList<CiudadEntity> ciudades = new ArrayList<>();
+        ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+        ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
+
+        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+        servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+        idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
+        return GuiaDTO.builder()
+                .id(1L)
+                .nombre("Rocio")
+                .sexo("Femenino")
+                .apellido("Doria")
+                .dni(12345678)
+                .foto("https://www.google.com/foto.jpg")
+                .password("123456")
+                .telefono("152222-3333")
+                .email("pepepaleta123@gmail.com")
+                .puntajePromedio(4.5f)
+                .credencial("Credecial")
+                .serviciosOfrecidos(servicioEntities)
+                .ciudades(ciudades)
+                .idiomas(idiomas)
+                .build();
+    }
+
+
+
+        public static TuristaEntity createTestTuristaA() {
+            return TuristaEntity.builder()
                     .id(2L)
                     .nombre("Juan")
                     .sexo("Masculino")
@@ -50,19 +134,21 @@ public final class TestDataUtil {
                     .build();
         }
 
-        public static UsuarioEntity createTestAuthorC() {
-            return UsuarioEntity.builder()
-                    .id(3L)
-                    .nombre("Rocio")
-                    .sexo("Femenino")
-                    .apellido("Doria")
-                    .dni(8123456)
+        public static TuristaDTO createTestTuristaDTOA() {
+            return TuristaDTO.builder()
+                    .id(2L)
+                    .nombre("Juan")
+                    .sexo("Masculino")
+                    .apellido("Rios")
+                    .dni(87654321)
                     .foto("https://www.google.com/foto.jpg")
-                    .password("124356")
-                    .telefono("152222-5555")
-                    .email("rociodoria@gmail.com")
+                    .password("654321")
+                    .telefono("152222-4444")
+                    .email("juanigrios@gmail.com")
                     .build();
         }
+
+
 
 }
 
