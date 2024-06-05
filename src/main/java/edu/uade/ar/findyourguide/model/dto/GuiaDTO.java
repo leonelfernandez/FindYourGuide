@@ -19,6 +19,6 @@ public class GuiaDTO extends UsuarioDTO {
     private Float puntajePromedio;
     private String credencial;
     private List<ServicioEntity> serviciosOfrecidos;
-    private List<CiudadEntity> ciudades;
+    private List<CiudadDTO> ciudades;
     private List<IdiomaEntity> idiomas;
 }

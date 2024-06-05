@@ -3,7 +3,10 @@ package edu.uade.ar.findyourguide.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uade.ar.findyourguide.TestDataUtil;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.entity.PaisEntity;
+import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
 import edu.uade.ar.findyourguide.service.IGuiaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,11 +87,22 @@ public class GuiaControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.credencial").value("Credencial")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos").value(new String[]{"Tour Grupal"})
+                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos[0].id").value(1L)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.ciudades").value(new String[]{"Buenos Aires"})
+                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos[0].nombre").value("Tour Grupal")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.idiomas").value(new String[]{"Espaniol"})
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].id").value(1L)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].nombre").value("Buenos Aires")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].pais.id").value(1L)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].pais.nombre").value("Argentina")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.idiomas[0].id").value(1L)
+
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.idiomas[0].nombre").value("Espaniol")
         );
     }
 
@@ -102,50 +116,50 @@ public class GuiaControllerTest {
 
     @Test
     public void ListGuiasDevuelveListaDeAutoresTest() throws Exception {
-        GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        guiaService.save(GuiaEntityA);
+        //GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
+        GuiaEntity savedGuia = guiaService.findById(96L).get();
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/guias")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+                MockMvcResultMatchers.jsonPath("$[0].id").value(savedGuia.getId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].nombre").value("Leonel")
+                MockMvcResultMatchers.jsonPath("$[0].nombre").value(savedGuia.getNombre())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].apellido").value("Fernandez")
+                MockMvcResultMatchers.jsonPath("$[0].apellido").value(savedGuia.getApellido())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].sexo").value("Masculino")
+                MockMvcResultMatchers.jsonPath("$[0].sexo").value(savedGuia.getSexo())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].dni").value(12345678)
+                MockMvcResultMatchers.jsonPath("$[0].dni").value(savedGuia.getDni())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].email").value("pepepaleta@gmail.com")
+                MockMvcResultMatchers.jsonPath("$[0].email").value(savedGuia.getEmail())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].password").value("123456")
+                MockMvcResultMatchers.jsonPath("$[0].password").value(savedGuia.getPassword())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].telefono").value("152222-3333")
+                MockMvcResultMatchers.jsonPath("$[0].telefono").value(savedGuia.getTelefono())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].foto").value("https://www.google.com/foto.jpg")
+                MockMvcResultMatchers.jsonPath("$[0].foto").value(savedGuia.getFoto())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].puntajePromedio").value(4.5f)
+                MockMvcResultMatchers.jsonPath("$[0].puntajePromedio").value(savedGuia.getPuntajePromedio())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].credencial").value("Credencial")
+                MockMvcResultMatchers.jsonPath("$[0].credencial").value(savedGuia.getCredencial())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].serviciosOfrecidos").value(new String[]{"Tour Grupal"})
+                MockMvcResultMatchers.jsonPath("$[0].serviciosOfrecidos[0].id").value(savedGuia.getServiciosOfrecidos().get(0).getId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].ciudades").value(new String[]{"Buenos Aires"})
+                MockMvcResultMatchers.jsonPath("$[0].ciudades[0].id").value(savedGuia.getCiudades().get(0).getId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].idiomas").value(new String[]{"Espaniol"})
+                MockMvcResultMatchers.jsonPath("$[0].idiomas[0].id").value(savedGuia.getIdiomas().get(0).getId())
         );
     }
 
     @Test
     public void getGuiaDevuelve200CuandoExisteTest() throws Exception {
-        GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        guiaService.save(GuiaEntityA);
+        //GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
+        //guiaService.save(GuiaEntityA);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/guias/1")
+                MockMvcRequestBuilders.get("/guias/97")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -156,7 +170,7 @@ public class GuiaControllerTest {
         guiaService.save(GuiaEntityA);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/guias/1")
+                MockMvcRequestBuilders.get("/guias/97")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.id").isNumber()
@@ -181,18 +195,28 @@ public class GuiaControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.credencial").value("Credencial")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos").value(new String[]{"Tour Grupal"})
+                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos[0].id").value(1L)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.ciudades").value(new String[]{"Buenos Aires"})
+                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos[0].nombre").value("Tour Grupal")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.idiomas").value(new String[]{"Espaniol"})
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].id").value(1L)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].nombre").value("Buenos Aires")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].pais.id").value(1L)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].pais.nombre").value("Argentina")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.idiomas[0].id").value(1L)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.idiomas[0].nombre").value("Espaniol")
         );
     }
 
     @Test
     public void GetGuiaDevuelve404CuandoNoExisteTest() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/guias/99")
+                MockMvcRequestBuilders.get("/guias/150")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -202,7 +226,7 @@ public class GuiaControllerTest {
         GuiaDTO testGuiaDTOA = TestDataUtil.createTestGuiaDTOA();
         String authorDtoJson = objectMapper.writeValueAsString(testGuiaDTOA);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/guias/99")
+                MockMvcRequestBuilders.put("/guias/150")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -211,7 +235,7 @@ public class GuiaControllerTest {
     @Test
     public void FullUpdateGuiaDevuelve402CuandoExisteGuiaTest() throws Exception {
         GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        GuiaEntity usuarioGuardado = guiaService.save(GuiaEntityA);
+        GuiaEntity usuarioGuardado = guiaService.findById(97L).get();
 
         GuiaDTO testGuiaDTOA = TestDataUtil.createTestGuiaDTOA();
         String authorDtoJson = objectMapper.writeValueAsString(testGuiaDTOA);
@@ -234,7 +258,7 @@ public class GuiaControllerTest {
         String guiaDtoUpdateJson = objectMapper.writeValueAsString(guiaDto);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/authors/" + savedGuia.getId())
+                MockMvcRequestBuilders.put("/guias/" + savedGuia.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(guiaDtoUpdateJson)
         ).andExpect(
@@ -260,19 +284,18 @@ public class GuiaControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.credencial").value(guiaDto.getCredencial())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos").value(guiaDto.getServiciosOfrecidos())
+                MockMvcResultMatchers.jsonPath("$.serviciosOfrecidos[0].id").value(guiaDto.getServiciosOfrecidos().get(0).getId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.ciudades").value(guiaDto.getCiudades())
+                MockMvcResultMatchers.jsonPath("$.ciudades[0].id").value(guiaDto.getCiudades().get(0).getId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.idiomas").value(guiaDto.getIdiomas())
+                MockMvcResultMatchers.jsonPath("$.idiomas[0].id").value(guiaDto.getIdiomas().get(0).getId())
         );
-
     }
 
     @Test
     public void PartialUpdateActualizaGuiaDevuelve200Test() throws Exception {
         GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        GuiaEntity guiaGuardado = guiaService.save(GuiaEntityA);
+        GuiaEntity guiaGuardado = guiaService.findById(1L).get();
 
         GuiaDTO testGuiaDTOA = TestDataUtil.createTestGuiaDTOA();
         testGuiaDTOA.setNombre("ACTUALIZADO");
@@ -288,7 +311,7 @@ public class GuiaControllerTest {
     @Test
     public void PartialUpdateDevuelveElGuiaActualizadoTest() throws Exception {
         GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        GuiaEntity guiaGuardado = guiaService.save(GuiaEntityA);
+        GuiaEntity guiaGuardado = guiaService.findById(1L).get();
 
         GuiaDTO testGuiaDTOA = TestDataUtil.createTestGuiaDTOA();
         testGuiaDTOA.setNombre("ACTUALIZADO");
@@ -340,7 +363,7 @@ public class GuiaControllerTest {
     @Test
     public void DeleteGuiaDevuelve204ParaGuiasExistentes() throws Exception {
         GuiaEntity GuiaEntityA = TestDataUtil.createTestGuiaEntityA();
-        GuiaEntity savedAuthor = guiaService.save(GuiaEntityA);
+        GuiaEntity savedAuthor = guiaService.findById(1L).get();
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/guias/" + savedAuthor.getId())

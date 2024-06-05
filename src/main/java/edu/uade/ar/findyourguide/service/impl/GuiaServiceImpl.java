@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class GuiaServiceImpl implements IGuiaService {
@@ -36,6 +37,36 @@ public class GuiaServiceImpl implements IGuiaService {
     @Override
     public boolean isExists(Long id) {
         return guiaRepository.existsById(id);
+    }
+
+    @Override
+    public List<GuiaEntity> findByPais(Long idPais) {
+        return StreamSupport.stream(guiaRepository.findByPais(idPais).spliterator(), false)
+                .toList();
+    }
+
+    @Override
+    public List<GuiaEntity> findByCiudad(Long id) {
+        return StreamSupport.stream(guiaRepository.findByCiudad(id).spliterator(), false)
+                .toList();
+    }
+
+    @Override
+    public List<GuiaEntity> findByNombre(String nombre) {
+        return StreamSupport.stream(guiaRepository.findByNombre(nombre).spliterator(), false)
+                .toList();
+    }
+
+    @Override
+    public List<GuiaEntity> findByApellido(String apellido) {
+        return StreamSupport.stream(guiaRepository.findByApellido(apellido).spliterator(), false)
+                .toList();
+    }
+
+    @Override
+    public List<GuiaEntity> findByPuntuacion(Float puntuacion) {
+        return StreamSupport.stream(guiaRepository.findByPuntuacion(puntuacion).spliterator(), false)
+                .toList();
     }
 
     @Override

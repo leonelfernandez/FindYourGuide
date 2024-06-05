@@ -18,7 +18,7 @@ public final class TestDataUtil {
             ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
             ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
             servicioEntities.add(ServicioEntity.builder().id(1L).nombre("TourGrupal").build());
             idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
 
@@ -27,13 +27,13 @@ public final class TestDataUtil {
                     .nombre("Leonel")
                     .sexo("Masculino")
                     .apellido("Fernandez")
-                    .dni(12345678)
+                    .dni(1234567811)
                     .foto("https://www.google.com/foto.jpg")
                     .password("123456")
                     .telefono("152222-3333")
                     .email("pepepaleta@gmail.com")
                     .puntajePromedio(4.5f)
-                    .credencial("Credecial")
+                    .credencial("Credencial")
                     .serviciosOfrecidos(servicioEntities)
                     .ciudades(ciudades)
                     .idiomas(idiomas)
@@ -45,7 +45,7 @@ public final class TestDataUtil {
             ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
             ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
             servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
             idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
             return GuiaDTO.builder()
@@ -59,7 +59,7 @@ public final class TestDataUtil {
                     .telefono("152222-3333")
                     .email("pepepaleta@gmail.com")
                     .puntajePromedio(4.5f)
-                    .credencial("Credecial")
+                    .credencial("Credencial")
                     .serviciosOfrecidos(servicioEntities)
                     .ciudades(ciudades)
                     .idiomas(idiomas)
@@ -71,7 +71,7 @@ public final class TestDataUtil {
         ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
         ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
         servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
         idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
         return GuiaEntity.builder()
@@ -85,7 +85,7 @@ public final class TestDataUtil {
                 .telefono("152222-3333")
                 .email("pepepaleta123@gmail.com")
                 .puntajePromedio(4.5f)
-                .credencial("Credecial")
+                .credencial("Credencial")
                 .serviciosOfrecidos(servicioEntities)
                 .ciudades(ciudades)
                 .idiomas(idiomas)
@@ -97,7 +97,7 @@ public final class TestDataUtil {
         ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
         ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L)).build());
+        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
         servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
         idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
         return GuiaDTO.builder()
@@ -111,7 +111,7 @@ public final class TestDataUtil {
                 .telefono("152222-3333")
                 .email("pepepaleta123@gmail.com")
                 .puntajePromedio(4.5f)
-                .credencial("Credecial")
+                .credencial("Credencial")
                 .serviciosOfrecidos(servicioEntities)
                 .ciudades(ciudades)
                 .idiomas(idiomas)

@@ -88,4 +88,47 @@ public class GuiaController {
         guiaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(path = "/guias/pais/{id}")
+    public List<GuiaDTO> listarGuiasPorPais(@PathVariable("id") Long id) {
+        List<GuiaEntity> guias = guiaService.findByPais(id);
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/ciudad/{id}")
+    public List<GuiaDTO> listarGuiasPorCiudad(@PathVariable("id") Long id) {
+        List<GuiaEntity> guias = guiaService.findByCiudad(id);
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/nombre/{nombre}")
+    public List<GuiaDTO> listarGuiasPorNombre(@PathVariable("nombre") String nombre) {
+        List<GuiaEntity> guias = guiaService.findByNombre(nombre);
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/apellido/{apellido}")
+    public List<GuiaDTO> listarGuiasPorApellido(@PathVariable("apellido") String apellido) {
+        List<GuiaEntity> guias = guiaService.findByApellido(apellido);
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/puntuacion/{puntuacion}")
+    public List<GuiaDTO> listarGuiasPorPuntuacionPromedio(@PathVariable("puntuacion") Float puntuacion) {
+        List<GuiaEntity> guias = guiaService.findByPuntuacion(puntuacion);
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

@@ -23,7 +23,9 @@ public abstract class UsuarioEntity {
     private String nombre;
     private String apellido;
     private String sexo;
+    @Column(unique = true)
     private Integer dni;
+    @Column(unique = true)
     private String email;
     private String password;
     private String telefono;

@@ -1,7 +1,6 @@
 package edu.uade.ar.findyourguide.service;
 
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +19,13 @@ public interface IGuiaService {
     public boolean isExists(Long id);
 
 
+    public List<GuiaEntity> findByPais(Long id);
+
+    public List<GuiaEntity> findByCiudad(Long id);
+
+    public List<GuiaEntity> findByNombre(String nombre);
+
+    public List<GuiaEntity> findByApellido(String apellido);
+
+    public List<GuiaEntity> findByPuntuacion(Float puntuacion);
 }
