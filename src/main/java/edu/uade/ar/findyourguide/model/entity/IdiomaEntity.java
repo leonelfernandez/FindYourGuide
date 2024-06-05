@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class IdiomaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idioma_id_seq")
+    @SequenceGenerator(name = "idioma_id_seq", sequenceName = "idioma_id_seq",  allocationSize=1)
     private Long id;
     private String nombre;
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PaisEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pais_id_seq")
+    @SequenceGenerator(name = "pais_id_seq", sequenceName = "pais_id_seq",  allocationSize=1)
     private Long id;
     private String nombre;
 
