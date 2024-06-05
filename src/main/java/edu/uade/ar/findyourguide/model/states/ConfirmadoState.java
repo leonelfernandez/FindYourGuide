@@ -1,16 +1,14 @@
-package edu.uade.ar.findyourguide.model;
+package edu.uade.ar.findyourguide.model.states;
 
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
-public class CanceladoState extends ReservaState{
-    private Float recargo = 0.1F;
-    private Float recargoTotalMonto = 1.0F;
+public class ConfirmadoState extends ReservaState{
 
-    public CanceladoState(ReservaEntity reserva) {
+    public ConfirmadoState(ReservaEntity reserva) {
         super(reserva);
-
     }
+
     @Override
     public void pagarAnticipo() {
 
@@ -28,6 +26,6 @@ public class CanceladoState extends ReservaState{
 
     @Override
     public ReservaStateEnum getState() {
-        return ReservaStateEnum.CANCELADO;
+        return ReservaStateEnum.CONFIRMADO;
     }
 }

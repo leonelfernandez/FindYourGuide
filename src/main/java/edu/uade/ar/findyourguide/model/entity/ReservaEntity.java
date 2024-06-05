@@ -1,7 +1,7 @@
 package edu.uade.ar.findyourguide.model.entity;
 
-import edu.uade.ar.findyourguide.model.ReservaState;
-import edu.uade.ar.findyourguide.model.ReservaStateFactory;
+import edu.uade.ar.findyourguide.model.states.ReservaState;
+import edu.uade.ar.findyourguide.model.factory.ReservaStateFactory;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

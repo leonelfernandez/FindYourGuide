@@ -1,11 +1,11 @@
-package edu.uade.ar.findyourguide.model;
+package edu.uade.ar.findyourguide.model.states;
 
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
-public class ConfirmadoState extends ReservaState{
+public class PendienteState extends ReservaState{
 
-    public ConfirmadoState(ReservaEntity reserva) {
+    public PendienteState(ReservaEntity reserva) {
         super(reserva);
     }
 
@@ -26,6 +26,6 @@ public class ConfirmadoState extends ReservaState{
 
     @Override
     public ReservaStateEnum getState() {
-        return ReservaStateEnum.CONFIRMADO;
+        return ReservaStateEnum.PENDIENTE;
     }
 }

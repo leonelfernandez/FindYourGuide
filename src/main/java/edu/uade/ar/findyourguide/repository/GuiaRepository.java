@@ -6,28 +6,33 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
 
 
     @Query("SELECT g FROM GuiaEntity g JOIN g.ciudades c JOIN c.pais p WHERE p.id = :idPais")
-    Iterable<GuiaEntity> findByPais(Long idPais);
+    public Iterable<GuiaEntity> findByPais(Long idPais);
 
     @Query("SELECT g FROM GuiaEntity g JOIN g.ciudades c WHERE c.id = :idCiudad")
-    Iterable<GuiaEntity> findByCiudad(Long idCiudad);
+    public Iterable<GuiaEntity> findByCiudad(Long idCiudad);
 
     @Query("SELECT g FROM GuiaEntity g WHERE g.nombre = :nombre")
-    Iterable<GuiaEntity> findByNombre(String nombre);
+    public Iterable<GuiaEntity> findByNombre(String nombre);
 
     @Query("SELECT g FROM GuiaEntity g WHERE g.apellido = :apellido")
-    Iterable<GuiaEntity> findByApellido(String apellido);
+    public Iterable<GuiaEntity> findByApellido(String apellido);
 
-    Iterable<GuiaEntity> findByIdioma();
-
-    Iterable<GuiaEntity> findByTipoDeServicios();
 
     @Query("SELECT g FROM GuiaEntity g WHERE g.puntajePromedio = :puntuacion")
-    Iterable<GuiaEntity> findByPuntuacion(Float puntuacion);
+    public Iterable<GuiaEntity> findByPuntuacion(Float puntuacion);
 
 
+    @Query("SELECT g FROM GuiaEntity g JOIN g.idiomas i WHERE i.id in (:idioma)")
+    public Iterable<GuiaEntity> findByIdioma(List<Long> idioma);
+
+
+    @Query("SELECT g FROM GuiaEntity g JOIN g.serviciosOfrecidos s WHERE s.id in (:idServicios)")
+    public Iterable<GuiaEntity> findByServicios(List<Long> idServicios);
 }

@@ -28,4 +28,8 @@ public interface IGuiaService {
     public List<GuiaEntity> findByApellido(String apellido);
 
     public List<GuiaEntity> findByPuntuacion(Float puntuacion);
+
+    public List<GuiaEntity> findByIdiomas(List<Long> idioma);
+
+    public List<GuiaEntity> findByServicios(List<Long> idServicios);
 }

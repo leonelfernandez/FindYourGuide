@@ -1,4 +1,4 @@
-package edu.uade.ar.findyourguide.model;
+package edu.uade.ar.findyourguide.model.adapters;
 
 public interface IPagoAdapter {
 

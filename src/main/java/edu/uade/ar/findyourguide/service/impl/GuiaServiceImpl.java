@@ -70,6 +70,18 @@ public class GuiaServiceImpl implements IGuiaService {
     }
 
     @Override
+    public List<GuiaEntity> findByIdiomas(List<Long> idiomas) {
+        return StreamSupport.stream(guiaRepository.findByIdioma(idiomas).spliterator(), false)
+                .toList();
+    }
+
+    @Override
+    public List<GuiaEntity> findByServicios(List<Long> idServicios) {
+        return StreamSupport.stream(guiaRepository.findByServicios(idServicios).spliterator(), false)
+                .toList();
+    }
+
+    @Override
     public GuiaEntity partialUpdate(Long id, GuiaEntity guiaEntity) {
         guiaEntity.setId(id);
 

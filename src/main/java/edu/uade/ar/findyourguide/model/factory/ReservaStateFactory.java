@@ -1,7 +1,8 @@
-package edu.uade.ar.findyourguide.model;
+package edu.uade.ar.findyourguide.model.factory;
 
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
+import edu.uade.ar.findyourguide.model.states.*;
 
 public class ReservaStateFactory {
 

@@ -1,7 +1,7 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
-import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
+import edu.uade.ar.findyourguide.model.dto.*;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
@@ -121,9 +121,25 @@ public class GuiaController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/guias/puntuacion/{puntuacion}")
-    public List<GuiaDTO> listarGuiasPorPuntuacionPromedio(@PathVariable("puntuacion") Float puntuacion) {
-        List<GuiaEntity> guias = guiaService.findByPuntuacion(puntuacion);
+    @GetMapping(path = "/guias/puntuaciones")
+    public List<GuiaDTO> listarGuiasPorPuntuacionPromedio(@RequestBody GuiaPuntuacionDTO puntuacion) {
+        List<GuiaEntity> guias = guiaService.findByPuntuacion(puntuacion.getPuntuacion());
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/idiomas")
+    public List<GuiaDTO> listarGuiasPorIdioma(@RequestBody IdiomasGuiaDTO idiomas) {
+        List<GuiaEntity> guias = guiaService.findByIdiomas(idiomas.getIdIdiomas());
+        return guias.stream()
+                .map(guiaMapper::mapTo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/servicios")
+    public List<GuiaDTO> listarGuiasPorServicio(@RequestBody ServicioGuiaDTO servicios) {
+        List<GuiaEntity> guias = guiaService.findByServicios(servicios.getIdServicios());
         return guias.stream()
                 .map(guiaMapper::mapTo)
                 .collect(Collectors.toList());
