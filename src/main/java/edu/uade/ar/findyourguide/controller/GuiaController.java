@@ -7,6 +7,7 @@ import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.service.IGuiaService;
 import edu.uade.ar.findyourguide.service.IGuiaService;
+import edu.uade.ar.findyourguide.service.IVerificacionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +20,24 @@ import java.util.stream.Collectors;
 public class GuiaController {
 
     private IGuiaService guiaService;
+
+    private IVerificacionService verificacionService;
     private Mapper<GuiaEntity, GuiaDTO> guiaMapper;
 
-    public GuiaController(IGuiaService guiaService, Mapper<GuiaEntity, GuiaDTO> guiaMapper) {
+    public GuiaController(IGuiaService guiaService, Mapper<GuiaEntity, GuiaDTO> guiaMapper, IVerificacionService verificacionService) {
         this.guiaService = guiaService;
         this.guiaMapper = guiaMapper;
+        this.verificacionService = verificacionService;
+
     }
 
     @PostMapping(path = "/guias")
     public ResponseEntity<GuiaDTO> crearGuia(@RequestBody GuiaDTO guiaDto) {
         GuiaEntity guia = guiaMapper.mapFrom(guiaDto);
+        if (guiaService.isExists(guia.getId()))
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        if (!verificacionService.verificarCredencialGuia(guia))
+            return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.UNAUTHORIZED);
         GuiaEntity guiaEntityGuardado = guiaService.save(guia);
         return new ResponseEntity<>(guiaMapper.mapTo(guiaEntityGuardado), HttpStatus.CREATED);
     }

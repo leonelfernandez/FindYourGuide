@@ -95,6 +95,7 @@ public class GuiaServiceImpl implements IGuiaService {
             Optional.ofNullable(guiaEntity.getPassword()).ifPresent(usuario::setPassword);
             Optional.ofNullable(guiaEntity.getCiudades()).ifPresent(usuario::setCiudades);
             Optional.ofNullable(guiaEntity.getCredencial()).ifPresent(usuario::setCredencial);
+            Optional.ofNullable(guiaEntity.getFotoVerificacion()).ifPresent(usuario::setFotoVerificacion);
             Optional.ofNullable(guiaEntity.getIdiomas()).ifPresent(usuario::setIdiomas);
             Optional.ofNullable(guiaEntity.getTelefono()).ifPresent(usuario::setTelefono);
             Optional.ofNullable(guiaEntity.getPuntajePromedio()).ifPresent(usuario::setPuntajePromedio);
