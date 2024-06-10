@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import edu.uade.ar.findyourguide.model.enums.ServiciosEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class ServicioEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "servicios_id_seq")
     private Long id;
 
-    private String nombre;
+    @Enumerated(EnumType.STRING)
+    private ServiciosEnum nombre;
 
 }
