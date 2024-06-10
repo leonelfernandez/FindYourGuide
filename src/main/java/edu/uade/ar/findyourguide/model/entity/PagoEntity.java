@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,12 +20,26 @@ public class PagoEntity {
     @SequenceGenerator(name = "pago_id_seq", sequenceName = "pago_id_seq",  allocationSize=1)
     private Long id;
     private Float montoTotal;
+    @Temporal(TemporalType.DATE)
     private Date fechaEmision;
-    private Float porcentajeAnticipo = 0.10F;
+    private Float porcentajeAnticipo;
+
+    @Transient
+    private IPagoAdapter pagoAdapter;
 
     @ManyToOne
     @JoinColumn(name = "reserva_id")
     private ReservaEntity reserva;
 
+    public PagoEntity(Float montoTotal, Date fechaEmision, ReservaEntity reserva) {
+        this.montoTotal = montoTotal;
+        this.fechaEmision = fechaEmision;
+        this.porcentajeAnticipo = 0.10F;
+        this.reserva = reserva;
+    }
+
+    public void pagarAnticipo() {
+       this.pagoAdapter.realizarPago(); //adapter realiza el pago
+    }
 
 }
