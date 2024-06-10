@@ -54,15 +54,15 @@ public class ReservaEntity {
 
 
     public void pagarAnticipo() {
-        this.estadoHandler.pagarAnticipo(this);
+        this.estadoHandler.pagarAnticipo();
     }
 
     public void cancelarReserva() {
-        this.estadoHandler.cancelarReserva(this);
+        this.estadoHandler.cancelarReserva();
     }
 
     public void confirmarReserva() {
-        this.estadoHandler.confirmarReserva(this);
+        this.estadoHandler.confirmarReserva();
     }
 
     public void cambiarEstado(ReservaState estado) {
@@ -79,7 +79,6 @@ public class ReservaEntity {
     public void postLoad() {
         this.estadoHandler = ReservaStateFactory.getReservaState(this.estado, this);
     }
-
 
 
 }

@@ -10,19 +10,19 @@ public class PendienteState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo(ReservaEntity reserva) {
-
+    public void pagarAnticipo() {
+        if (!this.getState().equals(ReservaStateEnum.CONFIRMADO)) throw new IllegalStateException("La reserva tiene que ser confirmadada para pagar el anticipo");
+        else this.reserva.cambiarEstado(new ConfirmadoState(this.reserva));
     }
 
     @Override
-    public void cancelarReserva(ReservaEntity reserva) {
-
+    public void cancelarReserva() {
+        this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 
     @Override
-    public void confirmarReserva(ReservaEntity reserva) {
-
-
+    public void confirmarReserva() {
+        this.reserva.cambiarEstado(new ConfirmadoState(this.reserva));
     }
 
     @Override

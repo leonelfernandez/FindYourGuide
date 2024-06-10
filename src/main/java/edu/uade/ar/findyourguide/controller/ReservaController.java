@@ -3,9 +3,8 @@ package edu.uade.ar.findyourguide.controller;
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.ReservaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
-import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.service.IPagoService;
 import edu.uade.ar.findyourguide.service.IReservaService;
-import edu.uade.ar.findyourguide.service.ITuristaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,15 @@ import java.util.stream.Collectors;
 @RestController
 public class ReservaController {
     private IReservaService reservaService;
+
+    private IPagoService pagoService; //Con esto pago el anticipo y el resto del viaje
     private Mapper<ReservaEntity, ReservaDTO> reservaMapper;
 
+    public ReservaController(IReservaService reservaService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, IPagoService pagoService) {
+        this.reservaService = reservaService;
+        this.reservaMapper = reservaMapper;
+        this.pagoService = pagoService;
+    }
 
     @PostMapping(path = "/reservas")
     public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
