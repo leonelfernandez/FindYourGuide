@@ -37,7 +37,7 @@ public class GuiaController {
         if (guiaService.isExists(guia.getId()))
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         if (!verificacionService.verificarCredencialGuia(guia))
-            return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.BAD_REQUEST);
         GuiaEntity guiaEntityGuardado = guiaService.save(guia);
         return new ResponseEntity<>(guiaMapper.mapTo(guiaEntityGuardado), HttpStatus.CREATED);
     }

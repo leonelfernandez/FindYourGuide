@@ -10,17 +10,18 @@ public class PendienteState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo() {
+    public void pagarAnticipo(ReservaEntity reserva) {
 
     }
 
     @Override
-    public void cancelarReserva() {
+    public void cancelarReserva(ReservaEntity reserva) {
 
     }
 
     @Override
-    public void confirmarReserva() {
+    public void confirmarReserva(ReservaEntity reserva) {
+
 
     }
 

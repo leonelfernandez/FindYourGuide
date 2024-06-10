@@ -7,22 +7,23 @@ public class CanceladoState extends ReservaState{
     private Float recargo = 0.1F;
     private Float recargoTotalMonto = 1.0F;
 
+
     public CanceladoState(ReservaEntity reserva) {
         super(reserva);
-
-    }
-    @Override
-    public void pagarAnticipo() {
-
     }
 
     @Override
-    public void cancelarReserva() {
+    public void pagarAnticipo(ReservaEntity reserva) {
 
     }
 
     @Override
-    public void confirmarReserva() {
+    public void cancelarReserva(ReservaEntity reserva) {
+
+    }
+
+    @Override
+    public void confirmarReserva(ReservaEntity reserva) {
 
     }
 

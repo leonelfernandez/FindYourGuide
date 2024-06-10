@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import edu.uade.ar.findyourguide.model.states.PendienteState;
 import edu.uade.ar.findyourguide.model.states.ReservaState;
 import edu.uade.ar.findyourguide.model.factory.ReservaStateFactory;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
@@ -40,7 +41,7 @@ public class ReservaEntity {
     @Enumerated(EnumType.STRING)
     private ReservaStateEnum estado;
     @Transient
-    private ReservaState estadoHandler;
+    private ReservaState estadoHandler = new PendienteState(this);
 
     @OneToOne
     @JoinColumn(name = "ciudad_id")
@@ -51,16 +52,17 @@ public class ReservaEntity {
     private List<PagoEntity> pagos;
 
 
+
     public void pagarAnticipo() {
-        this.estadoHandler.pagarAnticipo();
+        this.estadoHandler.pagarAnticipo(this);
     }
 
     public void cancelarReserva() {
-        this.estadoHandler.cancelarReserva();
+        this.estadoHandler.cancelarReserva(this);
     }
 
     public void confirmarReserva() {
-        this.estadoHandler.confirmarReserva();
+        this.estadoHandler.confirmarReserva(this);
     }
 
     public void cambiarEstado(ReservaState estado) {

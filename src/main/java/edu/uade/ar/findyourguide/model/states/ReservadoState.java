@@ -5,22 +5,24 @@ import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
 public class ReservadoState extends ReservaState{
 
+
     public ReservadoState(ReservaEntity reserva) {
         super(reserva);
     }
 
+
     @Override
-    public void pagarAnticipo() {
+    public void pagarAnticipo(ReservaEntity reserva) {
 
     }
 
     @Override
-    public void cancelarReserva() {
+    public void cancelarReserva(ReservaEntity reserva) {
 
     }
 
     @Override
-    public void confirmarReserva() {
+    public void confirmarReserva(ReservaEntity reserva) {
 
     }
 
