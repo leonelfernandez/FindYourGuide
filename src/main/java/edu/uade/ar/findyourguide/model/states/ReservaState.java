@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 public abstract class ReservaState {
     ReservaEntity reserva;
 
-    public abstract void pagarAnticipo();
+    public void pagarAnticipo() {}
 
-    public abstract void cancelarReserva();
+    public void cancelarReserva(){}
 
 
-    public abstract void confirmarReserva() ;
+    public void confirmarReserva() {}
 
     public abstract ReservaStateEnum getState();
 

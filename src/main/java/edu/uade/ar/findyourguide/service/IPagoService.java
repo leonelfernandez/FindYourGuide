@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.service;
 
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
+import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ public interface IPagoService {
 
     public Optional<PagoEntity> findById(Long id);
 
-    public PagoEntity save(PagoEntity pago);
+    PagoEntity save(PagoEntity pago, ReservaEntity reserva);
 
     public PagoEntity partialUpdate(Long pagoId, PagoEntity pago);
 

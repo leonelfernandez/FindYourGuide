@@ -8,11 +8,6 @@ public class ConfirmadoState extends ReservaState{
     public ConfirmadoState(ReservaEntity reserva) {
         super(reserva);
     }
-    @Override
-    public void pagarAnticipo() {
-        this.reserva.pagarAnticipo();
-        this.reserva.cambiarEstado(new ReservadoState(this.reserva));
-    }
 
     @Override
     public void cancelarReserva() {
@@ -21,7 +16,7 @@ public class ConfirmadoState extends ReservaState{
 
     @Override
     public void confirmarReserva() {
-        //?????
+        this.reserva.cambiarEstado(new ReservadoState(this.reserva));
     }
 
     @Override

@@ -56,16 +56,18 @@ public class ReservaEntity {
 
 
 
-    public void pagarAnticipo() {
+    public void pagarAnticipo(PagoEntity pago) {
+        this.pagos.add(pago);
+        pago.pagarAnticipo(); //Es el Adapter
         this.estadoHandler.pagarAnticipo();
     }
 
     public void cancelarReserva() {
-        this.estadoHandler.cancelarReserva();
+        //
     }
 
     public void confirmarReserva() {
-        this.estadoHandler.confirmarReserva();
+        //
     }
 
     public void cambiarEstado(ReservaState estado) {

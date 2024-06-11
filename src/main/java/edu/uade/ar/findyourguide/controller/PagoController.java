@@ -19,15 +19,18 @@ public class PagoController {
     private IPagoService pagoService;
     private Mapper<PagoEntity, PagoDTO> pagoMapper;
 
-    public PagoController(IPagoService pagoService, Mapper<PagoEntity, PagoDTO> pagoMapper) {
+    private IReservaService reservaService;
+
+    public PagoController(IPagoService pagoService, Mapper<PagoEntity, PagoDTO> pagoMapper, IReservaService reservaService) {
         this.pagoService = pagoService;
         this.pagoMapper = pagoMapper;
+        this.reservaService = reservaService;
     }
 
     @PostMapping(path = "/pagos")
-    public ResponseEntity<PagoDTO> crearPago(@RequestBody PagoDTO pagoDTO) {
+    public ResponseEntity<PagoDTO> crearPago(@RequestBody PagoDTO pagoDTO) { //Seria realizar el pago
         PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
-        PagoEntity pagoEntityGuardado = pagoService.save(pago);
+        PagoEntity pagoEntityGuardado = pagoService.save(pago, reservaService.findById(pagoDTO.getReservaId()).get());
         return new ResponseEntity<>(pagoMapper.mapTo(pagoEntityGuardado), HttpStatus.CREATED);
     }
     @GetMapping(path = "/pagos")
@@ -46,46 +49,4 @@ public class PagoController {
             return new ResponseEntity<>(pagoDTO, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-    @PutMapping(path = "/pagos/{id}")
-    public ResponseEntity<PagoDTO> fullUpdatePago(
-            @PathVariable("id") Long id,
-            @RequestBody PagoDTO pagoDTO) {
-
-        if(!pagoService.isExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        pagoDTO.setId(id);
-        PagoEntity pagoEntity = pagoMapper.mapFrom(pagoDTO);
-        PagoEntity savedPagoEntity = pagoService.save(pagoEntity);
-        return new ResponseEntity<>(
-                pagoMapper.mapTo(savedPagoEntity),
-                HttpStatus.OK);
-    }
-
-    @PatchMapping(path = "/pagos/{id}")
-    public ResponseEntity<PagoDTO> partialUpdatePago(
-            @PathVariable("id") Long id,
-            @RequestBody PagoDTO pagoDTO
-    ) {
-        if(!pagoService.isExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        PagoEntity pagoEntity = pagoMapper.mapFrom(pagoDTO);
-        PagoEntity updatedPago = pagoService.partialUpdate(id, pagoEntity);
-        return new ResponseEntity<>(
-                pagoMapper.mapTo(updatedPago),
-                HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/pagos/{id}")
-    public ResponseEntity deletePago(@PathVariable("id") Long id) {
-        pagoService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-
-
 }

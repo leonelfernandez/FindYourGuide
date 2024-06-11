@@ -1,7 +1,7 @@
 package edu.uade.ar.findyourguide.service.impl;
 
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
-import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.repository.PagoRepository;
 import edu.uade.ar.findyourguide.service.IPagoService;
 import org.springframework.stereotype.Service;
@@ -28,8 +28,10 @@ public class PagoServiceImpl implements IPagoService {
         return pagoRepository.findById(id);
     }
 
+
     @Override
-    public PagoEntity save(PagoEntity pago) {
+    public PagoEntity save(PagoEntity pago, ReservaEntity reserva) {
+        reserva.pagarAnticipo(pago);
         return pagoRepository.save(pago);
     }
 
@@ -45,6 +47,9 @@ public class PagoServiceImpl implements IPagoService {
             return pagoRepository.save(pago);
         }).orElseThrow(() -> new RuntimeException("Pago no existe"));
     }
+
+
+
 
     @Override
     public void deleteById(Long id) {
