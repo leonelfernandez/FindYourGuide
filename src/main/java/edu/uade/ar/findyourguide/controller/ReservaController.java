@@ -99,8 +99,8 @@ public class ReservaController {
         if (reserva == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        reservaService.cancelarReserva(reserva, fechaCancelacion);
-        return new ResponseEntity<>(reservaMapper.mapTo(reserva),
+        ReservaEntity reservaCancelada = reservaService.cancelarReserva(reserva, fechaCancelacion); //Me altera el estado de la reserva
+        return new ResponseEntity<>(reservaMapper.mapTo(reservaCancelada),
                 HttpStatus.OK);
     }
 

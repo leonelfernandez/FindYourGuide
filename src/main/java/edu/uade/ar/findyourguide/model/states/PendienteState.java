@@ -21,6 +21,9 @@ public class PendienteState extends ReservaState{
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
+
+
+
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 

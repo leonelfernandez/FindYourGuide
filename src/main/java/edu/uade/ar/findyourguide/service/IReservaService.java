@@ -21,5 +21,5 @@ public interface IReservaService {
     public boolean isExists(Long id);
 
 
-    public void cancelarReserva(ReservaEntity reserva, Date fechaCancelacion);
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion);
 }

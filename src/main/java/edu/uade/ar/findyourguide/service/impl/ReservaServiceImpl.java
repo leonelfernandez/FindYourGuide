@@ -57,7 +57,9 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public void cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) {
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) {
         reserva.cancelarReserva(fechaCancelacion);
+        return reservaRepository.findById(reserva.getId())
+                .orElseThrow(() -> new RuntimeException("Reserva no existe"));
     }
 }
