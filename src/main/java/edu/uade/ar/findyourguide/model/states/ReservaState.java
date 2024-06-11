@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import lombok.AllArgsConstructor;
@@ -10,13 +11,12 @@ import lombok.NoArgsConstructor;
 public abstract class ReservaState {
     ReservaEntity reserva;
 
-    public void pagarAnticipo() {}
+    public abstract void pagarAnticipo(PagoEntity pago);
 
-    public void cancelarReserva(){}
+    public abstract void cancelarReserva();
 
 
-    public void confirmarReserva() {}
-
+    public abstract void confirmarReserva();
     public abstract ReservaStateEnum getState();
 
 

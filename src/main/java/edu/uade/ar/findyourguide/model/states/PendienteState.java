@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
@@ -10,7 +11,9 @@ public class PendienteState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo() {
+    public void pagarAnticipo(PagoEntity pago) {
+        this.reserva.agregarPago(pago);
+        pago.pagarAnticipo(); // Adapter
         this.reserva.cambiarEstado(new ConfirmadoState(this.reserva));
     }
 
@@ -18,6 +21,9 @@ public class PendienteState extends ReservaState{
     public void cancelarReserva() {
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
+
+    @Override
+    public void confirmarReserva() {}
 
     @Override
     public ReservaStateEnum getState() {

@@ -57,9 +57,7 @@ public class ReservaEntity {
 
 
     public void pagarAnticipo(PagoEntity pago) {
-        this.pagos.add(pago);
-        pago.pagarAnticipo(); //Es el Adapter
-        this.estadoHandler.pagarAnticipo();
+        this.estadoHandler.pagarAnticipo(pago);
     }
 
     public void cancelarReserva() {
@@ -86,4 +84,7 @@ public class ReservaEntity {
     }
 
 
+    public void agregarPago(PagoEntity pago) {
+        this.pagos.add(pago);
+    }
 }

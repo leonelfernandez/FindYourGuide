@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
@@ -13,6 +14,9 @@ public class CanceladoState extends ReservaState{
     }
 
     @Override
+    public void pagarAnticipo(PagoEntity pago) {}
+
+    @Override
     public void cancelarReserva() {
         /*
         * Caso 1: Cancelacion previo a la aceptacion de parte del guia -> no se le cobrara nada, y se le reintegrara el anticipo.
@@ -20,6 +24,9 @@ public class CanceladoState extends ReservaState{
         * Caso 3: Cancelacion dentro de las fechas indicadas del viaje -> se le cobrara la totalidad.
         * */
     }
+
+    @Override
+    public void confirmarReserva() {}
 
 
     @Override

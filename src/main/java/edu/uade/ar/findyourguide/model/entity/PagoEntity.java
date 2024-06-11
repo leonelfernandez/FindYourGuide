@@ -39,7 +39,7 @@ public class PagoEntity {
     }
 
     public void pagarAnticipo() {
-       this.pagoAdapter.realizarPago(); //adapter realiza el pago
+       this.pagoAdapter.realizarPago(this.montoTotal * this.porcentajeAnticipo); //adapter realiza el pago
     }
 
 }

@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
@@ -12,7 +13,7 @@ public class ReservadoState extends ReservaState{
 
 
     @Override
-    public void pagarAnticipo() {
+    public void pagarAnticipo(PagoEntity pago) {
 
     }
 
