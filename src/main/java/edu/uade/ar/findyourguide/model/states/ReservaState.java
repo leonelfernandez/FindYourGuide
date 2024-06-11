@@ -6,6 +6,8 @@ import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class ReservaState {
@@ -13,7 +15,7 @@ public abstract class ReservaState {
 
     public abstract void pagarAnticipo(PagoEntity pago);
 
-    public abstract void cancelarReserva();
+    public abstract void cancelarReserva(Date fechaCancelacion); //Deberia pasarle el estado anterior? Para contemplar los casos de cancelacion
 
 
     public abstract void confirmarReserva();

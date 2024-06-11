@@ -6,6 +6,7 @@ import edu.uade.ar.findyourguide.service.IReservaService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,5 +54,10 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public boolean isExists(Long id) {
         return reservaRepository.existsById(id);
+    }
+
+    @Override
+    public void cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) {
+        reserva.cancelarReserva(fechaCancelacion);
     }
 }

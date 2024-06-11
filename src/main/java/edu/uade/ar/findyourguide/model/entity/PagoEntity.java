@@ -38,8 +38,8 @@ public class PagoEntity {
         this.reserva = reserva;
     }
 
-    public void pagarAnticipo() {
-       this.pagoAdapter.realizarPago(this.montoTotal * this.porcentajeAnticipo); //adapter realiza el pago
+    public Boolean pagarAnticipo() {
+       return this.pagoAdapter.realizarPago(this.montoTotal * this.porcentajeAnticipo); //adapter realiza el pago
     }
 
 }

@@ -60,8 +60,8 @@ public class ReservaEntity {
         this.estadoHandler.pagarAnticipo(pago);
     }
 
-    public void cancelarReserva() {
-        //
+    public void cancelarReserva(Date fechaCancelacion) {
+        this.estadoHandler.cancelarReserva(fechaCancelacion);
     }
 
     public void confirmarReserva() {

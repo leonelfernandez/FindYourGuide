@@ -4,6 +4,8 @@ import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
+import java.util.Date;
+
 public class ReservadoState extends ReservaState{
 
 
@@ -18,7 +20,7 @@ public class ReservadoState extends ReservaState{
     }
 
     @Override
-    public void cancelarReserva() {
+    public void cancelarReserva(Date fechaCancelacion) {
 
     }
 

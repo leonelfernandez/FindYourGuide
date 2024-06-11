@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
+import edu.uade.ar.findyourguide.model.dto.CancelacionDateDTO;
 import edu.uade.ar.findyourguide.model.dto.ReservaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.service.IPagoService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,6 +88,20 @@ public class ReservaController {
     public ResponseEntity deleteReserva(@PathVariable("id") Long id) {
         reservaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/reservas/{id}/cancelar")
+    public ResponseEntity<ReservaDTO> cancelarReserva(@PathVariable("id") Long id,
+                                                      @RequestBody CancelacionDateDTO cancelacionDateDTO
+    ) {
+        ReservaEntity reserva = reservaService.findById(id).orElse(null);
+        Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
+        if (reserva == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        reservaService.cancelarReserva(reserva, fechaCancelacion);
+        return new ResponseEntity<>(reservaMapper.mapTo(reserva),
+                HttpStatus.OK);
     }
 
 }
