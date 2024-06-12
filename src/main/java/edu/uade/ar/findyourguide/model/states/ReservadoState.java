@@ -16,11 +16,15 @@ public class ReservadoState extends ReservaState{
 
     @Override
     public void pagarAnticipo(PagoEntity pago) {
+        //throw error
 
     }
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
+        //Reintegro total
+
+        this.reserva.cambiarEstado(new CanceladoState(this.reserva));
 
     }
 

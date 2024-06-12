@@ -17,6 +17,9 @@ public class ConfirmadoState extends ReservaState{
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
+
+        //reintegro del porcentaje y cancelacion
+
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 

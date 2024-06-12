@@ -22,7 +22,7 @@ public class PendienteState extends ReservaState{
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
 
-
+        //reintegro de anticipo y cancelacion
 
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }

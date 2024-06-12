@@ -16,7 +16,9 @@ public class CanceladoState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo(PagoEntity pago) {}
+    public void pagarAnticipo(PagoEntity pago) {
+        //throw error
+    }
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
@@ -26,11 +28,15 @@ public class CanceladoState extends ReservaState{
         * Caso 3: Cancelacion dentro de las fechas indicadas del viaje -> se le cobrara la totalidad.
         * */
 
+        //Throw error
+
 
     }
 
     @Override
-    public void confirmarReserva() {}
+    public void confirmarReserva() {
+        //throw error
+    }
 
 
     @Override
