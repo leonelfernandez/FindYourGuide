@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.dto;
 
+import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,10 @@ public class PagoDTO {
 
     private Float porcentajeAnticipo;
 
+    private TipoPagoEnum referencia;
     private Long reservaId;
+
+
 
 
 }

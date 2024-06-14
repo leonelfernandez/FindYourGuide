@@ -12,6 +12,7 @@ public class ReservaStateFactory {
             case CONFIRMADO -> new ConfirmadoState(reservaEntity);
             case RESERVADO -> new ReservadoState(reservaEntity);
             case CANCELADO -> new CanceladoState(reservaEntity);
+            case FINALIZADO -> new FinalizadoState(reservaEntity);
             default -> throw new IllegalArgumentException("Unknown state: " + reservaStateEnum);
         };
     }

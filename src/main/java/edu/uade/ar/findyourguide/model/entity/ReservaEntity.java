@@ -29,10 +29,10 @@ public class ReservaEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reserva_id_seq")
     @SequenceGenerator(name = "reserva_id_seq", sequenceName = "reserva_id_seq",  allocationSize=1)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "guia_id")
     private GuiaEntity guia;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "turista_id")
     private TuristaEntity turista;
     @Temporal(TemporalType.DATE)
@@ -57,7 +57,7 @@ public class ReservaEntity {
 
 
     public void pagarAnticipo(PagoEntity pago) {
-        this.estadoHandler.pagarAnticipo(pago);
+        this.estadoHandler.pagar(pago);
     }
 
     public void cancelarReserva(Date fechaCancelacion) {

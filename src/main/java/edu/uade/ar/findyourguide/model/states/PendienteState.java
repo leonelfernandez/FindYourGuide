@@ -13,25 +13,28 @@ public class PendienteState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo(PagoEntity pago) {
+    public void pagar(PagoEntity pago) {
         this.reserva.agregarPago(pago);
         pago.pagarAnticipo(); // Adapter
         this.reserva.cambiarEstado(new ConfirmadoState(this.reserva));
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
-
-        //reintegro de anticipo y cancelacion
-
+    public void cancelarReserva(Date fechaCancelacion)  {
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 
     @Override
-    public void confirmarReserva() {}
+    public void confirmarReserva() {
+        //throw error
+    }
 
     @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.PENDIENTE;
     }
+
+
+
 }
+

@@ -6,33 +6,30 @@ import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
 import java.util.Date;
 
-public class ConfirmadoState extends ReservaState{
+public class FinalizadoState extends ReservaState{
 
-    private final Float recargo = 0.1F;
-
-    public ConfirmadoState(ReservaEntity reserva) {
+    public FinalizadoState(ReservaEntity reserva) {
         super(reserva);
     }
 
     @Override
     public void pagar(PagoEntity pago) {
-        //Ya esta pago el anticipo, asi que tirale error
-
+        //throw
     }
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
-        //Reintegro del anticipo
-        this.reserva.cambiarEstado(new CanceladoState(this.reserva));
+        //throw
     }
 
     @Override
     public void confirmarReserva() {
-        this.reserva.cambiarEstado(new ReservadoState(this.reserva));
+        //throw
+
     }
 
     @Override
     public ReservaStateEnum getState() {
-        return ReservaStateEnum.CONFIRMADO;
+        return ReservaStateEnum.FINALIZADO;
     }
 }

@@ -4,8 +4,10 @@ import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.PagoDTO;
 import edu.uade.ar.findyourguide.model.dto.PagoDTO;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
+import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.service.IPagoService;
 import edu.uade.ar.findyourguide.service.IReservaService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,17 @@ public class PagoController {
 
     @PostMapping(path = "/pagos")
     public ResponseEntity<PagoDTO> crearPago(@RequestBody PagoDTO pagoDTO) { //Seria realizar el pago
-        PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
-        PagoEntity pagoEntityGuardado = pagoService.save(pago, reservaService.findById(pagoDTO.getReservaId()).get());
-        return new ResponseEntity<>(pagoMapper.mapTo(pagoEntityGuardado), HttpStatus.CREATED);
+        try {
+            ReservaEntity reserva = reservaService.findById(pagoDTO.getReservaId()).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
+            PagoEntity pagoEntityGuardado = pagoService.save(pago, reserva);
+            this.reservaService.save(reserva);
+            //notificacionService.enviarNotificacion(reserva.getGuia(), "mensaje");
+            return new ResponseEntity<>(pagoMapper.mapTo(pagoEntityGuardado), HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
     @GetMapping(path = "/pagos")
     public List<PagoDTO> listarPagos() {

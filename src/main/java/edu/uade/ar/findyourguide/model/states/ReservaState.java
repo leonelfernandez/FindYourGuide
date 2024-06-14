@@ -13,7 +13,7 @@ import java.util.Date;
 public abstract class ReservaState {
     ReservaEntity reserva;
 
-    public abstract void pagarAnticipo(PagoEntity pago);
+    public abstract void pagar(PagoEntity pago);
 
     public abstract void cancelarReserva(Date fechaCancelacion); //Deberia pasarle el estado anterior? Para contemplar los casos de cancelacion
 

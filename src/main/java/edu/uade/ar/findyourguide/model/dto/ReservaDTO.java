@@ -3,6 +3,7 @@ package edu.uade.ar.findyourguide.model.dto;
 import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class ReservaDTO {
 
     private Float precioTotal;
 
-    private String estado;
+    private ReservaStateEnum estado;
 
     private CiudadEntity ciudad;
 

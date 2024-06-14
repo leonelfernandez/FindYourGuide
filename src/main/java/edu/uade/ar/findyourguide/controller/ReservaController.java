@@ -34,6 +34,7 @@ public class ReservaController {
         ReservaEntity reservaEntityGuardado = reservaService.save(turista);
         return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
     }
+
     @GetMapping(path = "/reservas")
     public List<ReservaDTO> listarReservas() {
         List<ReservaEntity> reservas = reservaService.findAll();

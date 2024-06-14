@@ -7,8 +7,6 @@ import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import java.util.Date;
 
 public class CanceladoState extends ReservaState{
-    private Float recargo = 0.1F;
-    private Float recargoTotalMonto = 1.0F;
 
 
     public CanceladoState(ReservaEntity reserva) {
@@ -16,7 +14,7 @@ public class CanceladoState extends ReservaState{
     }
 
     @Override
-    public void pagarAnticipo(PagoEntity pago) {
+    public void pagar(PagoEntity pago) {
         //throw error
     }
 
