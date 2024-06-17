@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,6 +31,13 @@ public abstract class UsuarioEntity {
     private String password;
     private String telefono;
     private String foto;
+    @ManyToOne
+    @JoinColumn(name = "trofeo_id")
+    private TrofeoEntity trofeo;
+
+    @OneToMany
+    @JoinColumn(name= "resenia_id")
+    private List<ReseniaEntity> resenias;
 
 
     public UsuarioEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto) {

@@ -24,6 +24,8 @@ public class GuiaEntity extends UsuarioEntity {
     private List<CiudadEntity> ciudades;
     @ManyToMany
     private List<IdiomaEntity> idiomas;
+    @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReseniaEntity> resenias;
 
     public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<CiudadEntity> ciudades, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni, String fotoVerificacion) {
         super(nombre, apellido, sexo, dni, email, password, telefono, foto);
