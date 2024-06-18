@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.service.impl;
 
+import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.repository.PagoRepository;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Service
 public class PagoServiceImpl implements IPagoService {
     private PagoRepository pagoRepository;
+    private IPagoAdapter pagoAdapter;
 
     public PagoServiceImpl(PagoRepository pagoRepository) {
         this.pagoRepository = pagoRepository;
@@ -29,8 +31,8 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public PagoEntity save(PagoEntity pago, ReservaEntity reserva) {
-        reserva.pagar(pago);
+    public PagoEntity save(PagoEntity pago) {
+        this.pagoAdapter.realizarPago(pago.getMontoTotal());
         return pagoRepository.save(pago);
     }
 

@@ -6,7 +6,8 @@ public enum ReservaStateEnum {
     CONFIRMADO,
     RESERVADO,
     CANCELADO,
-    FINALIZADO
+    FINALIZADO,
+    RECHAZADO
 
 
 }

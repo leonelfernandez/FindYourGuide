@@ -29,6 +29,11 @@ public class FinalizadoState extends ReservaState{
     }
 
     @Override
+    public void rechazarReserva() {
+
+    }
+
+    @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.FINALIZADO;
     }

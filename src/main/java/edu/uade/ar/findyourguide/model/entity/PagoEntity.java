@@ -64,7 +64,9 @@ public class PagoEntity {
         return this.pagoAdapter.realizarPago(this.montoTotal * this.porcentajeTotal);
     }
 
-    public Boolean reintegrarAnticipo() {
-
+    public Float getMontoAReintegrar() {
+        return this.montoTotal * this.porcentajeAnticipo;
     }
+
+
 }

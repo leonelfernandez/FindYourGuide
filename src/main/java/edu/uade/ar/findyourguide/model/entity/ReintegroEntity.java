@@ -27,5 +27,9 @@ public class ReintegroEntity {
     @OneToOne
     private PagoEntity pago;
 
-
+    public ReintegroEntity(Float montoReintegrado, Date fechaReintegro, PagoEntity pago) {
+        this.montoReintegrado = montoReintegrado;
+        this.fechaReintegro = fechaReintegro;
+        this.pago = pago;
+    }
 }

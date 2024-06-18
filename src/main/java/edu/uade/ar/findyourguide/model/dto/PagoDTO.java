@@ -19,7 +19,7 @@ public class PagoDTO {
 
     private Float porcentajeAnticipo;
 
-    private TipoPagoEnum referencia;
+    private String referencia;
     private Long reservaId;
 
 

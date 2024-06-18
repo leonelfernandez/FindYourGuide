@@ -21,4 +21,5 @@ public class ServicioEntity {
     @Enumerated(EnumType.STRING)
     private ServiciosEnum nombre;
 
+
 }

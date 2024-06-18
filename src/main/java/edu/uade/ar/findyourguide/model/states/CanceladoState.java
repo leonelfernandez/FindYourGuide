@@ -36,6 +36,11 @@ public class CanceladoState extends ReservaState{
         //throw error
     }
 
+    @Override
+    public void rechazarReserva() {
+        //throw error
+    }
+
 
     @Override
     public ReservaStateEnum getState() {

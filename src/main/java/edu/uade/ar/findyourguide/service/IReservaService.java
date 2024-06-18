@@ -22,4 +22,10 @@ public interface IReservaService {
 
 
     public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion);
+
+    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion);
+
+    public Float calcularMontoTotal(ReservaEntity reserva);
+
+    public Float calcularMontoAnticipo(ReservaEntity reserva);
 }

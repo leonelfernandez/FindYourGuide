@@ -19,6 +19,9 @@ public abstract class ReservaState {
 
 
     public abstract void confirmarReserva();
+
+    public abstract void rechazarReserva();
+
     public abstract ReservaStateEnum getState();
 
 

@@ -12,10 +12,10 @@ import java.util.List;
 public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
 
 
-    @Query("SELECT g FROM GuiaEntity g JOIN g.ciudades c JOIN c.pais p WHERE p.id = :idPais")
+    @Query("SELECT g FROM TarifaEntity t JOIN t.guia g JOIN t.ciudad c JOIN c.pais p WHERE p.id = :idPais")
     public Iterable<GuiaEntity> findByPais(Long idPais);
 
-    @Query("SELECT g FROM GuiaEntity g JOIN g.ciudades c WHERE c.id = :idCiudad")
+    @Query("SELECT g FROM TarifaEntity t JOIN t.guia g JOIN t.ciudad c WHERE c.id = :idCiudad")
     public Iterable<GuiaEntity> findByCiudad(Long idCiudad);
 
     @Query("SELECT g FROM GuiaEntity g WHERE g.nombre = :nombre")

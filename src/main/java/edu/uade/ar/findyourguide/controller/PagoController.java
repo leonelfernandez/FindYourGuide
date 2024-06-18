@@ -32,10 +32,8 @@ public class PagoController {
     @PostMapping(path = "/pagos")
     public ResponseEntity<PagoDTO> crearPago(@RequestBody PagoDTO pagoDTO) { //Seria realizar el pago
         try {
-            ReservaEntity reserva = reservaService.findById(pagoDTO.getReservaId()).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
             PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
-            PagoEntity pagoEntityGuardado = pagoService.save(pago, reserva);
-            this.reservaService.save(reserva);
+            PagoEntity pagoEntityGuardado = pagoService.save(pago);
             //notificacionService.enviarNotificacion(reserva.getGuia(), "mensaje");
             return new ResponseEntity<>(pagoMapper.mapTo(pagoEntityGuardado), HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -59,4 +57,5 @@ public class PagoController {
             return new ResponseEntity<>(pagoDTO, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
 }

@@ -6,43 +6,39 @@ import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 
 import java.util.Date;
 
-public class ReservadoState extends ReservaState{
+import static edu.uade.ar.findyourguide.model.enums.ReservaStateEnum.RECHAZADO;
 
+public class RechazadoState extends ReservaState{
 
-    public ReservadoState(ReservaEntity reserva) {
+    public RechazadoState(ReservaEntity reserva) {
         super(reserva);
     }
 
+    public RechazadoState() {
+    }
 
     @Override
     public void pagar(PagoEntity pago) {
-        this.reserva.agregarPago(pago);
-        pago.pagarRestante(pago);
-        //enviar la factura??
-        this.reserva.cambiarEstado(new FinalizadoState(this.reserva));
+        //throw errror
     }
 
     @Override
     public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
-        //Pagar el % de recargo indicado y en caso de estar en las fechas del viaje, pagar el total
-
-        this.reserva.cambiarEstado(new CanceladoState(this.reserva));
-
+        //throw errror
     }
 
     @Override
     public void confirmarReserva() {
-        //ya fue confirmada, throw error
+        //throw errror
     }
 
     @Override
     public void rechazarReserva() {
-
+        //throw errror
     }
 
     @Override
     public ReservaStateEnum getState() {
-        return ReservaStateEnum.RESERVADO;
+        return ReservaStateEnum.RECHAZADO;
     }
-
 }

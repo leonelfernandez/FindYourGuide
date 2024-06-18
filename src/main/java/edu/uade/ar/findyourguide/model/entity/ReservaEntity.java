@@ -10,8 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+
 import java.util.Date;
 import java.util.List;
 
@@ -35,20 +34,38 @@ public class ReservaEntity {
     @ManyToOne
     @JoinColumn(name = "turista_id")
     private TuristaEntity turista;
-    @Transient
-    private Float tarifaServicio = 0.10F; //Comision de la plataforma es de 10%
+
+    @ManyToOne
+    @JoinColumn(name = "ciudad_id")
+    private CiudadEntity ciudad;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaInicio;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaFin;
+
     @Enumerated(EnumType.STRING)
     private ReservaStateEnum estado;
     @Transient
     private ReservaState estadoHandler = new PendienteState(this);
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ViajeEntity viaje;
     @OneToMany
     private List<PagoEntity> pagos;
-
     @OneToMany
     private List<ServicioEntity> serviciosContratados;
+
+
+
+
+    public ReservaEntity(GuiaEntity guia, TuristaEntity turista, ReservaStateEnum estado, ReservaState estadoHandler, List<PagoEntity> pagos, List<ServicioEntity> serviciosContratados) {
+        this.guia = guia;
+        this.turista = turista;
+        this.estado = estado;
+        this.estadoHandler = estadoHandler;
+        this.pagos = pagos;
+        this.serviciosContratados = serviciosContratados;
+    }
 
     public void pagar(PagoEntity pago) {
         this.estadoHandler.pagar(pago);
@@ -60,6 +77,9 @@ public class ReservaEntity {
 
     public void confirmarReserva() {
         this.estadoHandler.confirmarReserva();
+    }
+    public void rechazarReserva() {
+        this.estadoHandler.rechazarReserva();
     }
 
     public void cambiarEstado(ReservaState estado) {
@@ -81,4 +101,6 @@ public class ReservaEntity {
     public void agregarPago(PagoEntity pago) {
         this.pagos.add(pago);
     }
+
+
 }

@@ -11,7 +11,7 @@ public interface IPagoService {
 
     public Optional<PagoEntity> findById(Long id);
 
-    PagoEntity save(PagoEntity pago, ReservaEntity reserva);
+    public PagoEntity save(PagoEntity pago);
 
     public PagoEntity partialUpdate(Long pagoId, PagoEntity pago);
 

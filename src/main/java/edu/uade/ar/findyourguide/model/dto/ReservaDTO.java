@@ -1,10 +1,6 @@
 package edu.uade.ar.findyourguide.model.dto;
 
 
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
-import edu.uade.ar.findyourguide.model.entity.ViajeEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +17,10 @@ public class ReservaDTO {
     private Long id;
     private Long guiaId;
     private Long turistaId;
-    private ViajeDTO viaje;
-    private List<Long> servicios;
+    private Long servicioId;
+    private Date fechaInicio;
+    private Date fechaFin;
+    private Long ciudadId;
+
 
 }

@@ -7,13 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ServicioDTO {
+public class MontoAPagarReservaDTO {
 
-    private Long idServicio;
-    private String nombre;
+    private Long reservaId;
+    private Float montoAPagarAnticipo;
+    private Float montoAPagarTotal;
+
 
 
 }
