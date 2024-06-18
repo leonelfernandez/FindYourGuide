@@ -18,11 +18,12 @@ public class ReservadoState extends ReservaState{
     public void pagar(PagoEntity pago) {
         this.reserva.agregarPago(pago);
         pago.pagarRestante(pago);
+        //enviar la factura
         this.reserva.cambiarEstado(new FinalizadoState(this.reserva));
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
+    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
         //Pagar el % de recargo indicado y en caso de estar en las fechas del viaje, pagar el total
 
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));

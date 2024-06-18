@@ -1,19 +1,33 @@
 package edu.uade.ar.findyourguide.service.impl;
 
+
+import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
+import edu.uade.ar.findyourguide.repository.PagoRepository;
+import edu.uade.ar.findyourguide.repository.ReintegroRepository;
 import edu.uade.ar.findyourguide.repository.ReservaRepository;
 import edu.uade.ar.findyourguide.service.IReservaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReservaServiceImpl implements IReservaService {
 
     private ReservaRepository reservaRepository;
+
+    private PagoRepository pagoRepository;
+
+    private ReintegroRepository reintegroRepository;
+
+
+    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository) {
+        this.reservaRepository = reservaRepository;
+        this.pagoRepository = pagoRepository;
+        this.reintegroRepository = reintegroRepository;
+    }
+
     @Override
     public List<ReservaEntity> findAll() {
         return new ArrayList<>(reservaRepository.findAll());
@@ -34,14 +48,13 @@ public class ReservaServiceImpl implements IReservaService {
         reservaEntity.setId(reservaId);
 
         return reservaRepository.findById(reservaId).map(reserva -> {
-            Optional.ofNullable(reservaEntity.getFechaInicio()).ifPresent(reserva::setFechaInicio);
-            Optional.ofNullable(reservaEntity.getFechaFin()).ifPresent(reserva::setFechaFin);
             Optional.ofNullable(reservaEntity.getTurista()).ifPresent(reserva::setTurista);
             Optional.ofNullable(reservaEntity.getGuia()).ifPresent(reserva::setGuia);
             Optional.ofNullable(reservaEntity.getEstado()).ifPresent(reserva::setEstado);
-            Optional.ofNullable(reservaEntity.getCiudadDestino()).ifPresent(reserva::setCiudadDestino);
-            Optional.ofNullable(reservaEntity.getPrecioTotal()).ifPresent(reserva::setPrecioTotal);
             Optional.ofNullable(reservaEntity.getPagos()).ifPresent(reserva::setPagos);
+            Optional.ofNullable(reservaEntity.getViaje()).ifPresent(reserva::setViaje);;
+            Optional.ofNullable(reservaEntity.getServiciosContratados()).ifPresent(reserva::setServiciosContratados);;
+            Optional.ofNullable(reservaEntity.getTarifaServicio()).ifPresent(reserva::setTarifaServicio);
             return reservaRepository.save(reserva);
         }).orElseThrow(() -> new RuntimeException("Reserva no existe"));
     }
@@ -56,10 +69,19 @@ public class ReservaServiceImpl implements IReservaService {
         return reservaRepository.existsById(id);
     }
 
+
     @Override
     public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) {
-        reserva.cancelarReserva(fechaCancelacion);
-        return reservaRepository.findById(reserva.getId())
-                .orElseThrow(() -> new RuntimeException("Reserva no existe"));
+        try {
+            PagoEntity pago = this.pagoRepository.findAll().get(0); //En este momento solo va a haber 1 pago (anticipo)
+            reserva.cancelarReserva(fechaCancelacion, pago);
+            return reservaRepository.findById(reserva.getId())
+                    .orElseThrow(() -> new RuntimeException("Reserva no existe"));
+        } catch (NoSuchElementException e) {
+            reserva.cancelarReserva(fechaCancelacion, null);
+            return reservaRepository.findById(reserva.getId())
+                    .orElseThrow(() -> new RuntimeException("Reserva no existe"));
+        }
+
     }
 }

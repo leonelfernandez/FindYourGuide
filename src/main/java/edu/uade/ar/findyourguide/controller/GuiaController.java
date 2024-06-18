@@ -36,7 +36,7 @@ public class GuiaController {
         GuiaEntity guia = guiaMapper.mapFrom(guiaDto);
         if (guiaService.isExists(guia.getId()))
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        if (!verificacionService.verificarCredencialGuia(guia))
+        if (!verificacionService.verificarCredencialGuia(guia)) //Esto va en el servicio de abril en el registro
             //notificacionService.enviarNotificacion(guia, mensaje);
             return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.BAD_REQUEST);
         GuiaEntity guiaEntityGuardado = guiaService.save(guia);

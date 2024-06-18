@@ -8,8 +8,6 @@ import java.util.Date;
 
 public class ConfirmadoState extends ReservaState{
 
-    private final Float recargo = 0.1F;
-
     public ConfirmadoState(ReservaEntity reserva) {
         super(reserva);
     }
@@ -21,13 +19,15 @@ public class ConfirmadoState extends ReservaState{
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
+    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
         //Reintegro del anticipo
+        pago.reintegrarAnticipo();
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 
     @Override
     public void confirmarReserva() {
+        //Abrir el chat
         this.reserva.cambiarEstado(new ReservadoState(this.reserva));
     }
 

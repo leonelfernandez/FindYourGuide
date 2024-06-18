@@ -28,10 +28,9 @@ public class PagoServiceImpl implements IPagoService {
         return pagoRepository.findById(id);
     }
 
-
     @Override
     public PagoEntity save(PagoEntity pago, ReservaEntity reserva) {
-        reserva.pagarAnticipo(pago);
+        reserva.pagar(pago);
         return pagoRepository.save(pago);
     }
 
@@ -47,9 +46,6 @@ public class PagoServiceImpl implements IPagoService {
             return pagoRepository.save(pago);
         }).orElseThrow(() -> new RuntimeException("Pago no existe"));
     }
-
-
-
 
     @Override
     public void deleteById(Long id) {

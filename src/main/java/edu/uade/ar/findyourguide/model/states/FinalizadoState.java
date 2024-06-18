@@ -18,7 +18,7 @@ public class FinalizadoState extends ReservaState{
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
+    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
         //throw
     }
 

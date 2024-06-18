@@ -35,37 +35,31 @@ public class ReservaEntity {
     @ManyToOne
     @JoinColumn(name = "turista_id")
     private TuristaEntity turista;
-    @Temporal(TemporalType.DATE)
-    private Date fechaInicio;
-    @Temporal(TemporalType.DATE)
-    private Date fechaFin;
-    private Float precioTotal;
-
+    @Transient
+    private Float tarifaServicio = 0.10F; //Comision de la plataforma es de 10%
     @Enumerated(EnumType.STRING)
     private ReservaStateEnum estado;
     @Transient
     private ReservaState estadoHandler = new PendienteState(this);
 
-    @OneToOne
-    @JoinColumn(name = "ciudad_id")
-    private CiudadEntity ciudadDestino;
-
+    @OneToOne(cascade = CascadeType.ALL)
+    private ViajeEntity viaje;
     @OneToMany
-    @JoinColumn(name = "pago_id")
     private List<PagoEntity> pagos;
 
+    @OneToMany
+    private List<ServicioEntity> serviciosContratados;
 
-
-    public void pagarAnticipo(PagoEntity pago) {
+    public void pagar(PagoEntity pago) {
         this.estadoHandler.pagar(pago);
     }
 
-    public void cancelarReserva(Date fechaCancelacion) {
-        this.estadoHandler.cancelarReserva(fechaCancelacion);
+    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
+        this.estadoHandler.cancelarReserva(fechaCancelacion, pago);
     }
 
     public void confirmarReserva() {
-        //
+        this.estadoHandler.confirmarReserva();
     }
 
     public void cambiarEstado(ReservaState estado) {

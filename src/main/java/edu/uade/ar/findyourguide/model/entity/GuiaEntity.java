@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 public class GuiaEntity extends UsuarioEntity {
-    private Float puntajePromedio;
+    private Float puntajePromedio = 0.0F;
     private String credencial;
 
     private String fotoVerificacion;
@@ -30,7 +30,7 @@ public class GuiaEntity extends UsuarioEntity {
         this.credencial = credencial;
         this.ciudades = ciudades;
         this.serviciosOfrecidos = serviciosOfrecidos;
-        this.puntajePromedio = 0.0f;
+        this.puntajePromedio = 0.0F;
         this.fotoVerificacion = fotoVerificacion;
     }
 

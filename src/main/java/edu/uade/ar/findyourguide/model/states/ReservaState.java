@@ -15,7 +15,7 @@ public abstract class ReservaState {
 
     public abstract void pagar(PagoEntity pago);
 
-    public abstract void cancelarReserva(Date fechaCancelacion); //Deberia pasarle el estado anterior? Para contemplar los casos de cancelacion
+    public abstract void cancelarReserva(Date fechaCancelacion, PagoEntity pago);
 
 
     public abstract void confirmarReserva();

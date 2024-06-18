@@ -24,7 +24,10 @@ public class PagoEntity {
     private Float montoTotal;
     @Temporal(TemporalType.DATE)
     private Date fechaEmision;
+    @Transient
     private Float porcentajeAnticipo;
+    @Transient
+    private Float porcentajeTotal = 1.0F;
 
     @Transient
     private IPagoAdapter pagoAdapter;
@@ -35,6 +38,10 @@ public class PagoEntity {
     @ManyToOne
     @JoinColumn(name = "reserva_id")
     private ReservaEntity reserva;
+
+    @OneToOne
+    private ReintegroEntity reintegro;
+
 
     public PagoEntity(Float montoTotal, Date fechaEmision, ReservaEntity reserva, TipoPagoEnum referencia) {
         this.montoTotal = montoTotal;
@@ -51,5 +58,13 @@ public class PagoEntity {
 
     public Boolean pagarRestante(PagoEntity pago) {
         return this.pagoAdapter.realizarPago(pago.getMontoTotal() - (pago.getMontoTotal() * pago.getPorcentajeAnticipo()));
+    }
+
+    public Boolean pagarTotal() {
+        return this.pagoAdapter.realizarPago(this.montoTotal * this.porcentajeTotal);
+    }
+
+    public Boolean reintegrarAnticipo() {
+
     }
 }

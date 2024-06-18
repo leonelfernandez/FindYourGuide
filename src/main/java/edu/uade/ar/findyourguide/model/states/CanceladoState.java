@@ -19,7 +19,7 @@ public class CanceladoState extends ReservaState{
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
+    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
         /*
         * Caso 1: Cancelacion previo a la aceptacion de parte del guia -> no se le cobrara nada, y se le reintegrara el anticipo. (Se hace todo en el estado previo y pasa a este todo)
         * Caso 2: Cancelacion con aceptacion previa de parte del guia -> se le cobrara un recargo N (en mi caso 10%).

@@ -3,35 +3,50 @@ package edu.uade.ar.findyourguide.controller;
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.CancelacionDateDTO;
 import edu.uade.ar.findyourguide.model.dto.ReservaDTO;
+import edu.uade.ar.findyourguide.model.dto.ViajeDTO;
+import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
+import edu.uade.ar.findyourguide.model.entity.ViajeEntity;
+import edu.uade.ar.findyourguide.service.IGuiaService;
 import edu.uade.ar.findyourguide.service.IPagoService;
 import edu.uade.ar.findyourguide.service.IReservaService;
+import edu.uade.ar.findyourguide.service.IViajeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 public class ReservaController {
     private IReservaService reservaService;
-
-    private IPagoService pagoService; //Con esto pago el anticipo y el resto del viaje
+    private IViajeService viajeService;
+    private IPagoService pagoService;
+    private IGuiaService guiaService;
     private Mapper<ReservaEntity, ReservaDTO> reservaMapper;
 
-    public ReservaController(IReservaService reservaService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, IPagoService pagoService) {
+
+    public ReservaController(IReservaService reservaService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, IPagoService pagoService, IViajeService viajeService, IGuiaService guiaService) {
         this.reservaService = reservaService;
         this.reservaMapper = reservaMapper;
         this.pagoService = pagoService;
+        this.viajeService = viajeService;
+        this.guiaService = guiaService;
     }
 
     @PostMapping(path = "/reservas")
     public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
-        ReservaEntity turista = reservaMapper.mapFrom(reservaDTO);
-        ReservaEntity reservaEntityGuardado = reservaService.save(turista);
+        ReservaEntity reserva = reservaMapper.mapFrom(reservaDTO);
+//        ViajeEntity viaje = reserva.getViaje();
+//        List<GuiaEntity> guias = guiaService.findByCiudad(viaje.getDestino().getId());
+//        if (guias.stream().noneMatch(g -> Objects.equals(g.getId(), reserva.getGuia().getId())))  //El viaje no es ofrecido por el guia
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        ReservaEntity reservaEntityGuardado = reservaService.save(reserva);
         return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
     }
 
@@ -95,14 +110,15 @@ public class ReservaController {
     public ResponseEntity<ReservaDTO> cancelarReserva(@PathVariable("id") Long id,
                                                       @RequestBody CancelacionDateDTO cancelacionDateDTO
     ) {
-        ReservaEntity reserva = reservaService.findById(id).orElse(null);
-        Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
-        if (reserva == null) {
+        try {
+            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
+            ReservaEntity reservaCancelada = reservaService.cancelarReserva(reserva, fechaCancelacion);
+            //notifacionService.enviarNotificacion(turista, mensaje);//Me altera el estado de la reserva
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaCancelada),
+                    HttpStatus.OK);
+        } catch(EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        ReservaEntity reservaCancelada = reservaService.cancelarReserva(reserva, fechaCancelacion); //Me altera el estado de la reserva
-        return new ResponseEntity<>(reservaMapper.mapTo(reservaCancelada),
-                HttpStatus.OK);
     }
-
 }
