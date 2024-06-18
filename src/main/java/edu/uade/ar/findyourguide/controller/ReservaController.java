@@ -1,15 +1,19 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
+import edu.uade.ar.findyourguide.model.dto.CancelacionDateDTO;
+import edu.uade.ar.findyourguide.model.dto.MontoAPagarReservaDTO;
 import edu.uade.ar.findyourguide.model.dto.ReservaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
-import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.service.IGuiaService;
+import edu.uade.ar.findyourguide.service.IPagoService;
 import edu.uade.ar.findyourguide.service.IReservaService;
-import edu.uade.ar.findyourguide.service.ITuristaService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,15 +21,25 @@ import java.util.stream.Collectors;
 @RestController
 public class ReservaController {
     private IReservaService reservaService;
+    private IPagoService pagoService;
+    private IGuiaService guiaService;
     private Mapper<ReservaEntity, ReservaDTO> reservaMapper;
 
 
+    public ReservaController(IReservaService reservaService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, IPagoService pagoService, IGuiaService guiaService) {
+        this.reservaService = reservaService;
+        this.reservaMapper = reservaMapper;
+        this.pagoService = pagoService;
+        this.guiaService = guiaService;
+    }
+
     @PostMapping(path = "/reservas")
     public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
-        ReservaEntity turista = reservaMapper.mapFrom(reservaDTO);
-        ReservaEntity reservaEntityGuardado = reservaService.save(turista);
+        ReservaEntity reserva = reservaMapper.mapFrom(reservaDTO);
+        ReservaEntity reservaEntityGuardado = reservaService.save(reserva);
         return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
     }
+
     @GetMapping(path = "/reservas")
     public List<ReservaDTO> listarReservas() {
         List<ReservaEntity> reservas = reservaService.findAll();
@@ -81,5 +95,50 @@ public class ReservaController {
         reservaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(path = "/reservas/{id}/cancelar")
+    public ResponseEntity<ReservaDTO> cancelarReserva(@PathVariable("id") Long id,
+                                                      @RequestBody CancelacionDateDTO cancelacionDateDTO
+    ) {
+        try {
+            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
+            ReservaEntity reservaCancelada = reservaService.cancelarReserva(reserva, fechaCancelacion);
+            //notifacionService.enviarNotificacion(turista, mensaje);//Me altera el estado de la reserva
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaCancelada),
+                    HttpStatus.OK);
+        } catch(EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(path = "/reservas/{id}/rechazar")
+    public ResponseEntity<ReservaDTO> rechazarReserva(@PathVariable("id") Long id,
+                                                      @RequestBody CancelacionDateDTO cancelacionDateDTO) {
+        try {
+            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
+            ReservaEntity reservaRechazada = reservaService.rechazarReserva(reserva, fechaCancelacion);
+            //notifacionService.enviarNotificacion(turista, mensaje);//Me altera el estado de la reserva
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaRechazada),
+                    HttpStatus.OK);
+        } catch(EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(path = "/reservas/monto/{id}")
+    public ResponseEntity<MontoAPagarReservaDTO> getMontoAPagar(@PathVariable("id") Long id) {
+        try {
+            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            Float montoTotal = reservaService.calcularMontoTotal(reserva);
+            Float montoAnticipo = reservaService.calcularMontoAnticipo(reserva);
+            return new ResponseEntity<>(new MontoAPagarReservaDTO(reserva.getId(), montoTotal, montoAnticipo), HttpStatus.OK);
+        } catch(EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
 }

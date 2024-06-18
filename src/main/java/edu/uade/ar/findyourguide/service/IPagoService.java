@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.service;
 
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
+import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 
 import java.util.List;
 import java.util.Optional;

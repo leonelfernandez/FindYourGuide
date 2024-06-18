@@ -26,6 +26,4 @@ public class CiudadEntity {
     @JoinColumn(name = "pais_id")
     private PaisEntity pais;
 
-    @ManyToMany
-    private List<GuiaEntity> guias;
 }

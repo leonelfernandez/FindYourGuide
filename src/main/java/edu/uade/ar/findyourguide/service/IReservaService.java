@@ -3,6 +3,7 @@ package edu.uade.ar.findyourguide.service;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,11 @@ public interface IReservaService {
     public boolean isExists(Long id);
 
 
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion);
+
+    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion);
+
+    public Float calcularMontoTotal(ReservaEntity reserva);
+
+    public Float calcularMontoAnticipo(ReservaEntity reserva);
 }

@@ -18,7 +18,7 @@ public class PaisEntity {
     private Long id;
     private String nombre;
 
-    public PaisEntity(Long id) {
-        this.id = id;
+    public PaisEntity(String nombre) {
+        this.nombre = nombre;
     }
 }
