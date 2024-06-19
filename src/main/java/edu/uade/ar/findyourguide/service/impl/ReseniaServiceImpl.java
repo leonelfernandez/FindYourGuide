@@ -27,6 +27,7 @@ public class ReseniaServiceImpl implements IReseniaService {
 
     @Override
     public ReseniaEntity save(ReseniaEntity resenia) {
+        resenia.notificar(resenia);
         return reseniaRepository.save(resenia);
     }
 
@@ -35,10 +36,10 @@ public class ReseniaServiceImpl implements IReseniaService {
         reseniaEntity.setId(reseniaId);
 
         return reseniaRepository.findById(reseniaId).map(resenia -> {
-            Optional.ofNullable(reseniaEntity.getPuntuacion()).ifPresent(resenia::setReserva);
-            Optional.ofNullable(reseniaEntity.getComentario()).ifPresent(resenia::setFechaEmision);
-            Optional.ofNullable(reseniaEntity.getGuia()).ifPresent(resenia::setMontoTotal);
-            Optional.ofNullable(reseniaEntity.getTurista()).ifPresent(resenia::setPorcentajeAnticipo);
+            Optional.ofNullable(reseniaEntity.getPuntuacion()).ifPresent(resenia::setPuntuacion);
+            Optional.ofNullable(reseniaEntity.getComentario()).ifPresent(resenia::setComentario);
+            Optional.ofNullable(reseniaEntity.getGuia()).ifPresent(resenia::setGuia);
+            Optional.ofNullable(reseniaEntity.getTurista()).ifPresent(resenia::setTurista);
             return reseniaRepository.save(resenia);
         }).orElseThrow(() -> new RuntimeException("Reseña no existe"));
     }

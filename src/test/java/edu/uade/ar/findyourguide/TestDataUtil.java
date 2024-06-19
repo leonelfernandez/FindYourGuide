@@ -1,9 +1,12 @@
 package edu.uade.ar.findyourguide;
 
+import edu.uade.ar.findyourguide.model.dto.CiudadDTO;
+import edu.uade.ar.findyourguide.model.dto.ServicioDTO;
 import edu.uade.ar.findyourguide.model.dto.TuristaDTO;
 import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
 import edu.uade.ar.findyourguide.model.entity.*;
+import edu.uade.ar.findyourguide.model.enums.ServiciosEnum;
 
 import java.util.ArrayList;
 
@@ -19,7 +22,7 @@ public final class TestDataUtil {
             ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
             ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
-            servicioEntities.add(ServicioEntity.builder().id(1L).nombre("TourGrupal").build());
+            servicioEntities.add(ServicioEntity.builder().id(1L).nombre(ServiciosEnum.TOUR_GRUPAL).build());
             idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
 
             return GuiaEntity.builder()
@@ -41,12 +44,12 @@ public final class TestDataUtil {
         }
 
         public static GuiaDTO createTestGuiaDTOA() {
-            ArrayList<CiudadEntity> ciudades = new ArrayList<>();
-            ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+            ArrayList<CiudadDTO> ciudades = new ArrayList<>();
+            ArrayList<ServicioDTO> servicioEntities = new ArrayList<>();
             ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-            ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
-            servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+            ciudades.add(CiudadDTO.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
+            servicioEntities.add(ServicioDTO.builder().nombre("Tour Grupal").build());
             idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
             return GuiaDTO.builder()
                     .id(1L)
@@ -72,7 +75,7 @@ public final class TestDataUtil {
         ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
         ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
-        servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+        servicioEntities.add(ServicioEntity.builder().id(1L).nombre(ServiciosEnum.TOUR_GRUPAL).build());
         idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
         return GuiaEntity.builder()
                 .id(1L)
@@ -93,12 +96,12 @@ public final class TestDataUtil {
     }
 
     public static GuiaDTO createTestGuiaDTOB() {
-        ArrayList<CiudadEntity> ciudades = new ArrayList<>();
-        ArrayList<ServicioEntity> servicioEntities = new ArrayList<>();
+        ArrayList<CiudadDTO> ciudades = new ArrayList<>();
+        ArrayList<ServicioDTO> servicioEntities = new ArrayList<>();
         ArrayList<IdiomaEntity> idiomas = new ArrayList<>();
 
-        ciudades.add(CiudadEntity.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
-        servicioEntities.add(ServicioEntity.builder().id(1L).nombre("Tour Grupal").build());
+        ciudades.add(CiudadDTO.builder().id(1L).nombre("Buenos Aires").pais(new PaisEntity(1L, "Argentina")).build());
+        servicioEntities.add(ServicioDTO.builder().nombre("Tour Grupal").build());
         idiomas.add(IdiomaEntity.builder().id(1L).nombre("Espaniol").build());
         return GuiaDTO.builder()
                 .id(1L)

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -24,8 +25,7 @@ public class GuiaEntity extends UsuarioEntity {
     @ManyToMany
     private List<IdiomaEntity> idiomas;
     @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReseniaEntity> resenias;
-
+    private List<CiudadEntity> ciudades;
 
 
     public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni, String fotoVerificacion) {
@@ -34,6 +34,7 @@ public class GuiaEntity extends UsuarioEntity {
         this.serviciosOfrecidos = serviciosOfrecidos;
         this.puntajePromedio = 0.0F;
         this.fotoVerificacion = fotoVerificacion;
+        this.ciudades = new ArrayList<>();
     }
 
 

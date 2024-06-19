@@ -44,9 +44,9 @@ public class ReseniaEntity implements IObservable {
     }
 
     @Override
-    public void notificar() {
+    public void notificar(ReseniaEntity resenia) {
         for(IObserver trofeo: trofeos) {
-            trofeo.actualizar();
+            trofeo.actualizar(resenia);
         }
     }
 }

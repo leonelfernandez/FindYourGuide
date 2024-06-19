@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,7 +34,7 @@ public abstract class UsuarioEntity {
     private String foto;
     @ManyToOne
     @JoinColumn(name = "trofeo_id")
-    private TrofeoEntity trofeo;
+    private List<TrofeoEntity> trofeos;
 
     @OneToMany
     @JoinColumn(name= "resenia_id")
@@ -49,5 +50,7 @@ public abstract class UsuarioEntity {
         this.password = password;
         this.telefono = telefono;
         this.foto = foto;
+        this.trofeos = new ArrayList<>();
+        this.resenias = new ArrayList<>();
     }
 }
