@@ -7,6 +7,7 @@ import edu.uade.ar.findyourguide.repository.GuiaRepository;
 import edu.uade.ar.findyourguide.repository.IdiomaRepository;
 import edu.uade.ar.findyourguide.repository.ServicioRepository;
 import edu.uade.ar.findyourguide.service.IGuiaService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -19,9 +19,19 @@ public class GuiaEntity extends UsuarioEntity {
     private String fotoVerificacion;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "guia_servicio",
+            joinColumns = @JoinColumn(name = "guia_id"),
+            inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
     private List<ServicioEntity> serviciosOfrecidos;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "guia_idioma",
+            joinColumns = @JoinColumn(name = "guia_id"),
+            inverseJoinColumns = @JoinColumn(name = "idioma_id")
+    )
     private List<IdiomaEntity> idiomas;
 
 
