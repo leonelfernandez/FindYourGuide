@@ -16,6 +16,7 @@ import edu.uade.ar.findyourguide.service.IReservaService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -55,34 +56,11 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public ReservaEntity save(ReservaEntity reserva) throws ReservaError {
-        if (turistaCanBeContracted(reserva)) {
+        if ((reservaRepository.countOverlapping(reserva.getFechaInicio(), reserva.getFechaFin()) > 0 && reservaRepository.countFinalized(ReservaStateEnum.CONFIRMADO, ReservaStateEnum.PENDIENTE, ReservaStateEnum.RESERVADO) > 0)) {
             throw new ReservaError("El turista ya tiene una reserva en esa fecha");
         }
         return reservaRepository.save(reserva);
     }
-
-    private Boolean turistaCanBeContracted(ReservaEntity reserva) {
-        return reservaRepository.findAll().stream()
-                .anyMatch(r -> isOverlapping(reserva, r) && !isFinalized(r));
-    }
-
-    private boolean isOverlapping(ReservaEntity reserva, ReservaEntity r) {
-        Date fechaInicio = reserva.getFechaInicio();
-        Date fechaFin = reserva.getFechaFin();
-        Date rInicio = r.getFechaInicio();
-        Date rFin = r.getFechaFin();
-
-        return (rInicio.before(fechaFin) && rFin.after(fechaInicio));
-    }
-
-    private boolean isFinalized(ReservaEntity r) {
-        ReservaStateEnum estado = r.getEstado();
-        return estado == ReservaStateEnum.FINALIZADO ||
-                estado == ReservaStateEnum.PENDIENTE ||
-                estado == ReservaStateEnum.RESERVADO ||
-                estado == ReservaStateEnum.CONFIRMADO;
-    }
-
 
     @Override
     public ReservaEntity partialUpdate(Long reservaId, ReservaEntity reservaEntity) {
@@ -97,6 +75,7 @@ public class ReservaServiceImpl implements IReservaService {
             return reservaRepository.save(reserva);
         }).orElseThrow(() -> new RuntimeException("Reserva no existe"));
     }
+
 
     @Override
     public void deleteById(Long id) {
