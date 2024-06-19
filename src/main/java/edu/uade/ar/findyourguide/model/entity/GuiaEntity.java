@@ -18,23 +18,20 @@ public class GuiaEntity extends UsuarioEntity {
 
     private String fotoVerificacion;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<ServicioEntity> serviciosOfrecidos;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<IdiomaEntity> idiomas;
 
 
-
-    public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni, String fotoVerificacion) {
+    public GuiaEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto, Float puntajePromedio, String credencial, String fotoVerificacion, List<ServicioEntity> serviciosOfrecidos, List<IdiomaEntity> idiomas) {
         super(nombre, apellido, sexo, dni, email, password, telefono, foto);
-        this.credencial = credencial;
-        this.serviciosOfrecidos = serviciosOfrecidos;
         this.puntajePromedio = 0.0F;
+        this.credencial = credencial;
         this.fotoVerificacion = fotoVerificacion;
+        this.serviciosOfrecidos = serviciosOfrecidos;
+        this.idiomas = idiomas;
     }
-
-
-
 }
 

@@ -20,5 +20,5 @@ public class GuiaDTO extends UsuarioDTO {
     private String credencial;
     private String fotoVerificacion;
     private List<ServicioDTO> serviciosOfrecidos;
-    private List<IdiomaEntity> idiomas;
+    private List<IdiomasDTO> idiomas;
 }
