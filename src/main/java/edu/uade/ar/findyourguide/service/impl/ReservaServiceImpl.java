@@ -7,6 +7,7 @@ import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.repository.PagoRepository;
 import edu.uade.ar.findyourguide.repository.ReintegroRepository;
 import edu.uade.ar.findyourguide.repository.ReservaRepository;
@@ -14,6 +15,7 @@ import edu.uade.ar.findyourguide.repository.TarifaRepository;
 import edu.uade.ar.findyourguide.service.IReservaService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -50,10 +52,37 @@ public class ReservaServiceImpl implements IReservaService {
         return reservaRepository.findById(id);
     }
 
+
     @Override
-    public ReservaEntity save(ReservaEntity reserva) {
-       return reservaRepository.save(reserva);
+    public ReservaEntity save(ReservaEntity reserva) throws ReservaError {
+        if (turistaCanBeContracted(reserva)) {
+            throw new ReservaError("El turista ya tiene una reserva en esa fecha");
+        }
+        return reservaRepository.save(reserva);
     }
+
+    private Boolean turistaCanBeContracted(ReservaEntity reserva) {
+        return reservaRepository.findAll().stream()
+                .anyMatch(r -> isOverlapping(reserva, r) && !isFinalized(r));
+    }
+
+    private boolean isOverlapping(ReservaEntity reserva, ReservaEntity r) {
+        Date fechaInicio = reserva.getFechaInicio();
+        Date fechaFin = reserva.getFechaFin();
+        Date rInicio = r.getFechaInicio();
+        Date rFin = r.getFechaFin();
+
+        return (rInicio.before(fechaFin) && rFin.after(fechaInicio));
+    }
+
+    private boolean isFinalized(ReservaEntity r) {
+        ReservaStateEnum estado = r.getEstado();
+        return estado == ReservaStateEnum.FINALIZADO ||
+                estado == ReservaStateEnum.PENDIENTE ||
+                estado == ReservaStateEnum.RESERVADO ||
+                estado == ReservaStateEnum.CONFIRMADO;
+    }
+
 
     @Override
     public ReservaEntity partialUpdate(Long reservaId, ReservaEntity reservaEntity) {

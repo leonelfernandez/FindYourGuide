@@ -41,9 +41,13 @@ public class ReservaController {
 
     @PostMapping(path = "/reservas")
     public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
-        ReservaEntity reserva = reservaMapper.mapFrom(reservaDTO);
-        ReservaEntity reservaEntityGuardado = reservaService.save(reserva);
-        return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
+        try {
+            ReservaEntity reserva = reservaMapper.mapFrom(reservaDTO);
+            ReservaEntity reservaEntityGuardado = reservaService.save(reserva);
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
+        } catch (ReservaError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT); //Falta DTO
+        }
     }
 
     @GetMapping(path = "/reservas")
@@ -67,17 +71,19 @@ public class ReservaController {
     public ResponseEntity<ReservaDTO> fullUpdateReserva(
             @PathVariable("id") Long id,
             @RequestBody ReservaDTO reservaDTO) {
-
-        if(!reservaService.isExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            if(!reservaService.isExists(id)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            reservaDTO.setId(id);
+            ReservaEntity reservaEntity = reservaMapper.mapFrom(reservaDTO);
+            ReservaEntity savedReservaEntity = reservaService.save(reservaEntity);
+            return new ResponseEntity<>(
+                    reservaMapper.mapTo(savedReservaEntity),
+                    HttpStatus.OK);
+        } catch(ReservaError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-
-        reservaDTO.setId(id);
-        ReservaEntity reservaEntity = reservaMapper.mapFrom(reservaDTO);
-        ReservaEntity savedReservaEntity = reservaService.save(reservaEntity);
-        return new ResponseEntity<>(
-                reservaMapper.mapTo(savedReservaEntity),
-                HttpStatus.OK);
     }
 
     @PatchMapping(path = "/reservas/{id}")
@@ -102,7 +108,7 @@ public class ReservaController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path = "/reservas/{id}/cancelar")
+    @PatchMapping(path = "/reservas/{id}/cancelar")
     public ResponseEntity<ReservaDTO> cancelarReserva(@PathVariable("id") Long id,
                                                       @RequestBody CancelacionDateDTO cancelacionDateDTO
     ) {
@@ -115,10 +121,12 @@ public class ReservaController {
                     HttpStatus.OK);
         } catch(EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ReservaFinalizadaError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
-    @GetMapping(path = "/reservas/{id}/rechazar")
+    @PatchMapping(path = "/reservas/{id}/rechazar")
     public ResponseEntity<ReservaDTO> rechazarReserva(@PathVariable("id") Long id,
                                                       @RequestBody CancelacionDateDTO cancelacionDateDTO) {
         try {

@@ -14,7 +14,7 @@ public interface IReservaService {
 
     public Optional<ReservaEntity> findById(Long id);
 
-    public ReservaEntity save(ReservaEntity reserva);
+    public ReservaEntity save(ReservaEntity reserva) throws ReservaError;
 
     public ReservaEntity partialUpdate(Long reservaId, ReservaEntity reserva);
 
@@ -37,6 +37,6 @@ public interface IReservaService {
 
     public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError;
 
-    void realizarReintegro(PagoEntity pago, Date fechaCancelacion
-        this.reintegroRepository.save(new ReintegroEntity(this.getMontoAReintegrar(pago), fechaCancelacion, pago
+    public void realizarReintegro(PagoEntity pago, Date fechaCancelacion);
+
 }

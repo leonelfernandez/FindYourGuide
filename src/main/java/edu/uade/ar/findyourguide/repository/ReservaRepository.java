@@ -12,4 +12,5 @@ public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
     @Query("SELECT t.precio from TarifaEntity t where t.ciudad.id = :idCiudad and t.guia.id = :idGuia")
     public Float findMontoTotalReserva(Long idCiudad, Long idGuia);
 
+
 }
