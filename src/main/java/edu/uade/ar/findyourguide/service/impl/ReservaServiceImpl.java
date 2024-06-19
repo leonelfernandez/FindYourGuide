@@ -56,7 +56,7 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public ReservaEntity save(ReservaEntity reserva) throws ReservaError {
-        if ((reservaRepository.countOverlapping(reserva.getFechaInicio(), reserva.getFechaFin()) > 0 && reservaRepository.countFinalized(ReservaStateEnum.CONFIRMADO, ReservaStateEnum.PENDIENTE, ReservaStateEnum.RESERVADO) > 0)) {
+        if (reservaRepository.countOverlapping(reserva.getFechaInicio(), reserva.getFechaFin(), ReservaStateEnum.PENDIENTE, ReservaStateEnum.CONFIRMADO, ReservaStateEnum.RESERVADO) > 0) {
             throw new ReservaError("El turista ya tiene una reserva en esa fecha");
         }
         return reservaRepository.save(reserva);
