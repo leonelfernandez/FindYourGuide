@@ -1,14 +1,15 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import edu.uade.ar.findyourguide.exceptions.AnticipoPagadoError;
+import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
+import edu.uade.ar.findyourguide.exceptions.ReservaConfirmadaError;
+import edu.uade.ar.findyourguide.exceptions.ReservaFinalizadaError;
 import edu.uade.ar.findyourguide.model.states.PendienteState;
 import edu.uade.ar.findyourguide.model.states.ReservaState;
 import edu.uade.ar.findyourguide.model.factory.ReservaStateFactory;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.List;
 @Builder
 @Table(name = "reservas")
 @Entity
+@ToString
 public class ReservaEntity {
 
     @Id
@@ -67,18 +69,18 @@ public class ReservaEntity {
         this.serviciosContratados = serviciosContratados;
     }
 
-    public void pagar(PagoEntity pago) {
+    public void pagar(PagoEntity pago) throws AnticipoPagadoError, ReservaFinalizadaError {
         this.estadoHandler.pagar(pago);
     }
 
-    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
-        this.estadoHandler.cancelarReserva(fechaCancelacion, pago);
+    public void cancelarReserva(Date fechaCancelacion) throws ReservaFinalizadaError {
+        this.estadoHandler.cancelarReserva(fechaCancelacion);
     }
 
-    public void confirmarReserva() {
+    public void confirmarReserva() throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError {
         this.estadoHandler.confirmarReserva();
     }
-    public void rechazarReserva() {
+    public void rechazarReserva() throws PagoNoRealizadoError, ReservaFinalizadaError, ReservaConfirmadaError {
         this.estadoHandler.rechazarReserva();
     }
 

@@ -1,5 +1,7 @@
 package edu.uade.ar.findyourguide.service.impl;
 
+import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
+import edu.uade.ar.findyourguide.exceptions.PagosYaRealizadosError;
 import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -31,20 +33,19 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public PagoEntity save(PagoEntity pago) {
-        this.pagoAdapter.realizarPago(pago.getMontoTotal());
+    public PagoEntity save(PagoEntity pago) throws PagosYaRealizadosError {
+        if (pagoRepository.findAll().size() == 2)
+            throw new PagosYaRealizadosError("Los pagos ya fueron realizados");
         return pagoRepository.save(pago);
     }
 
     @Override
     public PagoEntity partialUpdate(Long pagoId, PagoEntity pagoEntity) {
         pagoEntity.setId(pagoId);
-
         return pagoRepository.findById(pagoId).map(pago -> {
             Optional.ofNullable(pagoEntity.getReserva()).ifPresent(pago::setReserva);
             Optional.ofNullable(pagoEntity.getFechaEmision()).ifPresent(pago::setFechaEmision);
             Optional.ofNullable(pagoEntity.getMontoTotal()).ifPresent(pago::setMontoTotal);
-            Optional.ofNullable(pagoEntity.getPorcentajeAnticipo()).ifPresent(pago::setPorcentajeAnticipo);
             return pagoRepository.save(pago);
         }).orElseThrow(() -> new RuntimeException("Pago no existe"));
     }

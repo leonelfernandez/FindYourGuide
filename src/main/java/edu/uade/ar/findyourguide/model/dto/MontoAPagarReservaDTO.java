@@ -14,6 +14,7 @@ public class MontoAPagarReservaDTO {
 
     private Long reservaId;
     private Float montoAPagarAnticipo;
+    private Float montoAPagarRestante;
     private Float montoAPagarTotal;
 
 

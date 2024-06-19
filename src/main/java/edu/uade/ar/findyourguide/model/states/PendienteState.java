@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -15,26 +16,24 @@ public class PendienteState extends ReservaState{
 
     @Override
     public void pagar(PagoEntity pago) {
-        this.reserva.agregarPago(pago);
-//        if (!pago.pagarAnticipo()) throw new Error; // Adapter
-        pago.pagarAnticipo();
-        //mandar notificacion al guia?
+        this.reserva.setEstado(ReservaStateEnum.CONFIRMADO);
         this.reserva.cambiarEstado(new ConfirmadoState(this.reserva));
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago)  {
+    public void cancelarReserva(Date fechaCancelacion)  {
+        this.reserva.setEstado(ReservaStateEnum.CANCELADO);
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
     }
 
     @Override
-    public void confirmarReserva() {
-        //throw error
+    public void confirmarReserva() throws PagoNoRealizadoError {
+        throw new PagoNoRealizadoError("Primero debe pagar el anticipo");
     }
 
     @Override
-    public void rechazarReserva() {
-        //throw error
+    public void rechazarReserva() throws PagoNoRealizadoError {
+        throw new PagoNoRealizadoError("Primero debe pagar el anticipo");
 
     }
 

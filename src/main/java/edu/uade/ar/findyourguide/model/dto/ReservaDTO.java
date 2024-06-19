@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.model.dto;
 
 
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class ReservaDTO {
     private Date fechaInicio;
     private Date fechaFin;
     private Long ciudadId;
+    private ReservaStateEnum estado;
 
 
 }

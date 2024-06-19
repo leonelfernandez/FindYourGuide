@@ -1,6 +1,9 @@
 package edu.uade.ar.findyourguide.service.impl;
 
 
+import edu.uade.ar.findyourguide.exceptions.*;
+import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
+import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -26,12 +29,15 @@ public class ReservaServiceImpl implements IReservaService {
 
     private Float porcentajeAnticipo = 0.10F;
 
+    private IPagoAdapter pagoAdapter;
+
 
     public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository) {
         this.reservaRepository = reservaRepository;
         this.pagoRepository = pagoRepository;
         this.reintegroRepository = reintegroRepository;
         this.tarifaRepository = tarifaRepository;
+        this.pagoAdapter = new Stripe();
     }
 
     @Override
@@ -75,34 +81,85 @@ public class ReservaServiceImpl implements IReservaService {
 
 
     @Override
-    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) {
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError {
         try {
-            PagoEntity pago = this.pagoRepository.findAll().get(0); //En este momento solo va a haber 1 pago (anticipo)
-            reserva.cancelarReserva(fechaCancelacion, pago);
+            List<PagoEntity> pagos = this.pagoRepository.findAll();
+            if (pagos.isEmpty()) { //Pendiente
+                reserva.cancelarReserva(fechaCancelacion);
+            } else if (pagos.size() == 1) { //Confirmado
+                reserva.cancelarReserva(fechaCancelacion);
+                this.realizarReintegro(pagos.getFirst(), fechaCancelacion);
+            } else if (verificarFechaCancelacion(reserva, fechaCancelacion)) {
+                reserva.cancelarReserva(fechaCancelacion);
+                this.pagoAdapter.realizarPago(this.calcularMontoRestante(reserva));
+            } else {
+                reserva.cancelarReserva(fechaCancelacion);
+            }
             return reservaRepository.findById(reserva.getId())
                     .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
         } catch (NoSuchElementException e) {
-            reserva.cancelarReserva(fechaCancelacion, null);
+            reserva.cancelarReserva(fechaCancelacion);
             return reservaRepository.findById(reserva.getId())
                     .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
+        } catch (ReservaFinalizadaError e) {
+            throw new RuntimeException(e);
         }
+    }
 
+    private Boolean verificarFechaCancelacion(ReservaEntity reserva, Date fechaCancelacion) {
+        return !fechaCancelacion.before(reserva.getFechaInicio()) && !fechaCancelacion.after(reserva.getFechaFin());
     }
 
     @Override
     public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion) {
-        try {
-            PagoEntity pago = reserva.getPagos().get(0);
-            reintegroRepository.save(new ReintegroEntity(pago.getMontoAReintegrar(), fechaCancelacion,pago));
-            reserva.rechazarReserva();
-            return reservaRepository.findById(reserva.getId())
-                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-        } catch(NoSuchElementException e) {
-            return reservaRepository.findById(reserva.getId())
-                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-        }
+//        try {
+//            PagoEntity pago = reserva.getPagos().get(0);
+//            reintegroRepository.save(new ReintegroEntity(pago.getMontoAReintegrar(), fechaCancelacion,pago));
+//            reserva.rechazarReserva();
+//            return reservaRepository.findById(reserva.getId())
+//                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
+//        } catch(NoSuchElementException e) {
+//            return reservaRepository.findById(reserva.getId())
+//                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
+//        }
+        return null;
     }
 
+    @Override
+    public ReservaEntity pagar(PagoEntity pago) throws PagosYaRealizadosError, AnticipoPagadoError, ReservaFinalizadaError {
+        ReservaEntity reservaGuardada = reservaRepository.findById(pago.getReserva().getId()).orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
+        List<PagoEntity> pagosRealizados = reservaGuardada.getPagos();
+        if (pagosRealizados.size() == 2)
+            throw new PagosYaRealizadosError("Pagos ya realizados para esta reserva");
+          if (pagosRealizados.isEmpty())
+              this.pagarAnticipo(reservaGuardada);
+          else
+              this.pagarRestante(reservaGuardada);
+
+          reservaGuardada.pagar(pago);
+          reservaGuardada.agregarPago(pago);
+          return reservaRepository.save(reservaGuardada);
+
+    }
+
+    @Override
+    public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError {
+        reserva.confirmarReserva();
+        return reservaRepository.save(reserva);
+    }
+
+    private void pagarAnticipo(ReservaEntity reserva) {
+        this.pagoAdapter.realizarPago(this.calcularMontoAnticipo(reserva));
+    }
+
+    private void pagarRestante(ReservaEntity reserva) {
+        this.pagoAdapter.realizarPago(this.calcularMontoTotal(reserva) - this.calcularMontoAnticipo(reserva));
+    }
+
+    private Float getMontoAReintegrar(PagoEntity pago) {
+        return pago.getMontoTotal() * this.porcentajeAnticipo;
+    }
+    @Override
     public Float calcularMontoTotal(ReservaEntity reserva) {
         Long guiaId = reserva.getGuia().getId();
         Long ciudadID = reserva.getCiudad().getId();
@@ -110,9 +167,20 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
+    public Float calcularMontoRestante(ReservaEntity reserva) {
+        return calcularMontoTotal(reserva) - calcularMontoAnticipo(reserva);
+    }
+
+    @Override
     public Float calcularMontoAnticipo(ReservaEntity reserva) {
         return calcularMontoTotal(reserva) * porcentajeAnticipo;
     }
+
+    @Override
+    public void realizarReintegro(PagoEntity pago, Date fechaCancelacion) {
+        this.reintegroRepository.save(new ReintegroEntity(this.getMontoAReintegrar(pago), fechaCancelacion, pago));
+    }
+
 
 
 }

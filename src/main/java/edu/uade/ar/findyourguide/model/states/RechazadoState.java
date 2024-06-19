@@ -14,8 +14,6 @@ public class RechazadoState extends ReservaState{
         super(reserva);
     }
 
-    public RechazadoState() {
-    }
 
     @Override
     public void pagar(PagoEntity pago) {
@@ -23,7 +21,7 @@ public class RechazadoState extends ReservaState{
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
+    public void cancelarReserva(Date fechaCancelacion) {
         //throw errror
     }
 

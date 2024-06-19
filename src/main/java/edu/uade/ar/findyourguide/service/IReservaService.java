@@ -1,6 +1,8 @@
 package edu.uade.ar.findyourguide.service;
 
+import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
+import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 
 import java.util.Date;
@@ -21,11 +23,20 @@ public interface IReservaService {
     public boolean isExists(Long id);
 
 
-    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion);
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError;
 
     public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion);
 
     public Float calcularMontoTotal(ReservaEntity reserva);
 
+    public Float calcularMontoRestante(ReservaEntity reserva);
+
     public Float calcularMontoAnticipo(ReservaEntity reserva);
+
+    public ReservaEntity pagar(PagoEntity pago) throws PagosYaRealizadosError, AnticipoPagadoError, ReservaFinalizadaError;
+
+    public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError;
+
+    void realizarReintegro(PagoEntity pago, Date fechaCancelacion
+        this.reintegroRepository.save(new ReintegroEntity(this.getMontoAReintegrar(pago), fechaCancelacion, pago
 }

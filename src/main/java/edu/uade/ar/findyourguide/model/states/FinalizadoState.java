@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.ReservaFinalizadaError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
@@ -13,24 +14,24 @@ public class FinalizadoState extends ReservaState{
     }
 
     @Override
-    public void pagar(PagoEntity pago) {
-        //throw
+    public void pagar(PagoEntity pago) throws ReservaFinalizadaError {
+        throw new ReservaFinalizadaError("La reserva ya fue finalizada");
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
-        //throw
+    public void cancelarReserva(Date fechaCancelacion) throws ReservaFinalizadaError {
+        throw new ReservaFinalizadaError("La reserva ya fue finalizada");
     }
 
     @Override
-    public void confirmarReserva() {
-        //throw
+    public void confirmarReserva() throws ReservaFinalizadaError {
+        throw new ReservaFinalizadaError("La reserva ya fue finalizada");
 
     }
 
     @Override
-    public void rechazarReserva() {
-
+    public void rechazarReserva() throws ReservaFinalizadaError {
+        throw new ReservaFinalizadaError("La reserva ya fue finalizada");
     }
 
     @Override

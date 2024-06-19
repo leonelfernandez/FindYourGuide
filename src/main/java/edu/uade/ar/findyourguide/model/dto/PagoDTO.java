@@ -14,15 +14,14 @@ import java.util.Date;
 public class PagoDTO {
 
     private Long id;
+
     private Float montoTotal;
+
     private Date fechaEmision;
 
-    private Float porcentajeAnticipo;
-
     private String referencia;
+
     private Long reservaId;
-
-
 
 
 }
