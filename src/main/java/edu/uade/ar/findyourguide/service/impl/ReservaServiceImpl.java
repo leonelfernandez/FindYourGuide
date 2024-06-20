@@ -8,6 +8,7 @@ import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
+import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
 import edu.uade.ar.findyourguide.repository.PagoRepository;
 import edu.uade.ar.findyourguide.repository.ReintegroRepository;
 import edu.uade.ar.findyourguide.repository.ReservaRepository;
@@ -15,8 +16,6 @@ import edu.uade.ar.findyourguide.repository.TarifaRepository;
 import edu.uade.ar.findyourguide.service.IReservaService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -97,9 +96,10 @@ public class ReservaServiceImpl implements IReservaService {
             } else if (pagos.size() == 1) { //Confirmado
                 reserva.cancelarReserva(fechaCancelacion);
                 this.realizarReintegro(pagos.getFirst(), fechaCancelacion);
-            } else if (verificarFechaCancelacion(reserva, fechaCancelacion)) {
-                reserva.cancelarReserva(fechaCancelacion);
+            } else if (verificarFechaCancelacion(reserva, fechaCancelacion)) { //ESTO ME DA MIEDO
+                reserva.agregarPago(new PagoEntity(this.calcularMontoRestante(reserva), fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION));
                 this.pagoAdapter.realizarPago(this.calcularMontoRestante(reserva));
+                reserva.cancelarReserva(fechaCancelacion);
             } else {
                 reserva.cancelarReserva(fechaCancelacion);
             }
