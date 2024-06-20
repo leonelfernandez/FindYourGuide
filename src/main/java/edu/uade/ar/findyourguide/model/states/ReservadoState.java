@@ -24,7 +24,7 @@ public class ReservadoState extends ReservaState{
     @Override
     public void cancelarReserva(Date fechaCancelacion) {
         //Pagar el % de recargo indicado y en caso de estar en las fechas del viaje, pagar el total
-
+        this.reserva.setEstado(ReservaStateEnum.CANCELADO);
         this.reserva.cambiarEstado(new CanceladoState(this.reserva));
 
     }

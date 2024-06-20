@@ -15,8 +15,10 @@ public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
     @Query("SELECT t.precio from TarifaEntity t where t.ciudad.id = :idCiudad and t.guia.id = :idGuia")
     public Float findMontoTotalReserva(Long idCiudad, Long idGuia);
 
+    @Query("SELECT COUNT(*) FROM ReservaEntity r WHERE r.id = :id AND ((:fechaInicio BETWEEN r.fechaInicio AND r.fechaFin OR :fechaFin BETWEEN r.fechaInicio AND r.fechaFin) AND r.estado in(:estado1, :estado2, :estado3))")
+    public Long countOverlapping(Long id, Date fechaInicio, Date fechaFin, ReservaStateEnum estado1, ReservaStateEnum estado2, ReservaStateEnum estado3);
 
-    @Query("SELECT COUNT(*) FROM ReservaEntity r WHERE ((:fechaInicio BETWEEN r.fechaInicio AND r.fechaFin OR :fechaFin BETWEEN r.fechaInicio AND r.fechaFin) AND r.estado in(:estado1, :estado2, :estado3))")
-    public Long countOverlapping(Date fechaInicio, Date fechaFin, ReservaStateEnum estado1, ReservaStateEnum estado2, ReservaStateEnum estado3);
+    @Query("SELECT 1 FROM ReservaEntity r WHERE r.id = :id AND (:fechaCancelacion BETWEEN r.fechaInicio AND r.fechaFin)")
+    public Integer fechaCancelacionEnViaje(Long id, Date fechaCancelacion);
 
 }

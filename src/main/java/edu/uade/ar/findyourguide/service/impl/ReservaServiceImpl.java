@@ -4,15 +4,10 @@ package edu.uade.ar.findyourguide.service.impl;
 import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
-import edu.uade.ar.findyourguide.model.entity.PagoEntity;
-import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
-import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
+import edu.uade.ar.findyourguide.model.entity.*;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
-import edu.uade.ar.findyourguide.repository.PagoRepository;
-import edu.uade.ar.findyourguide.repository.ReintegroRepository;
-import edu.uade.ar.findyourguide.repository.ReservaRepository;
-import edu.uade.ar.findyourguide.repository.TarifaRepository;
+import edu.uade.ar.findyourguide.repository.*;
 import edu.uade.ar.findyourguide.service.IReservaService;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +28,17 @@ public class ReservaServiceImpl implements IReservaService {
 
     private IPagoAdapter pagoAdapter;
 
+    private Float montoPenalizacion = 0.20F;
+    private ServicioRepository servicioRepository;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository) {
+
+    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository, ServicioRepository servicioRepository) {
         this.reservaRepository = reservaRepository;
         this.pagoRepository = pagoRepository;
         this.reintegroRepository = reintegroRepository;
         this.tarifaRepository = tarifaRepository;
         this.pagoAdapter = new Stripe();
+        this.servicioRepository = servicioRepository;
     }
 
     @Override
@@ -55,11 +54,17 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public ReservaEntity save(ReservaEntity reserva) throws ReservaError {
-        if (reservaRepository.countOverlapping(reserva.getFechaInicio(), reserva.getFechaFin(), ReservaStateEnum.PENDIENTE, ReservaStateEnum.CONFIRMADO, ReservaStateEnum.RESERVADO) > 0) {
+        if (reservaRepository.countOverlapping(reserva.getId(), reserva.getFechaInicio(), reserva.getFechaFin(), ReservaStateEnum.PENDIENTE, ReservaStateEnum.CONFIRMADO, ReservaStateEnum.RESERVADO) > 0) {
             throw new ReservaError("El turista ya tiene una reserva en esa fecha");
         }
+        List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
+        List<ServicioEntity> filteredServiciosRepo = serviciosRepo.stream()
+                .filter(reserva.getServiciosContratados()::contains)
+                .toList();
+        reserva.setServiciosContratados(filteredServiciosRepo);
         return reservaRepository.save(reserva);
     }
+
 
     @Override
     public ReservaEntity partialUpdate(Long reservaId, ReservaEntity reservaEntity) {
@@ -90,32 +95,30 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError {
         try {
-            List<PagoEntity> pagos = this.pagoRepository.findAll();
-            if (pagos.isEmpty()) { //Pendiente
-                reserva.cancelarReserva(fechaCancelacion);
-            } else if (pagos.size() == 1) { //Confirmado
-                reserva.cancelarReserva(fechaCancelacion);
-                this.realizarReintegro(pagos.getFirst(), fechaCancelacion);
-            } else if (verificarFechaCancelacion(reserva, fechaCancelacion)) { //ESTO ME DA MIEDO
-                reserva.agregarPago(new PagoEntity(this.calcularMontoRestante(reserva), fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION));
+            List<PagoEntity> pagos = reserva.getPagos(); //Obtener pagos de la reserva
+            if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1) { //ESTO ME DA MIEDO -- Cancelacion en fecha de viaje (Estado Reservado)
+                PagoEntity pago = new PagoEntity(this.calcularMontoRestante(reserva), fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION);
+                reserva.agregarPago(pago);
+                pagoRepository.save(pago);
                 this.pagoAdapter.realizarPago(this.calcularMontoRestante(reserva));
+                reserva.cancelarReserva(fechaCancelacion);
+            } else if (pagos.size() == 1 && reserva.getEstado() == ReservaStateEnum.RESERVADO) {
+                PagoEntity pago = new PagoEntity(this.calcularMontoRestante(reserva) * this.montoPenalizacion, fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION);
+                reserva.agregarPago(pago);
+                pagoRepository.save(pago);
+                this.pagoAdapter.realizarPago(this.calcularMontoTotal(reserva) * this.montoPenalizacion);
                 reserva.cancelarReserva(fechaCancelacion);
             } else {
                 reserva.cancelarReserva(fechaCancelacion);
             }
-            return reservaRepository.findById(reserva.getId())
-                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-        } catch (NoSuchElementException e) {
-            reserva.cancelarReserva(fechaCancelacion);
-            return reservaRepository.findById(reserva.getId())
-                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-        } catch (ReservaFinalizadaError e) {
+            return reservaRepository.save(reserva);
+            } catch (ReservaFinalizadaError e) {
             throw new RuntimeException(e);
-        }
+            }
     }
 
     private Boolean verificarFechaCancelacion(ReservaEntity reserva, Date fechaCancelacion) {
-        return !fechaCancelacion.before(reserva.getFechaInicio()) && !fechaCancelacion.after(reserva.getFechaFin());
+        return reservaRepository.fechaCancelacionEnViaje(reserva.getId(), fechaCancelacion) != null;
     }
 
     @Override
@@ -139,14 +142,14 @@ public class ReservaServiceImpl implements IReservaService {
         List<PagoEntity> pagosRealizados = reservaGuardada.getPagos();
         if (pagosRealizados.size() == 2)
             throw new PagosYaRealizadosError("Pagos ya realizados para esta reserva");
-          if (pagosRealizados.isEmpty())
-              this.pagarAnticipo(reservaGuardada);
-          else
-              this.pagarRestante(reservaGuardada);
+        if (pagosRealizados.isEmpty())
+            this.pagarAnticipo(reservaGuardada);
+        else
+            this.pagarRestante(reservaGuardada);
 
-          reservaGuardada.pagar(pago);
-          reservaGuardada.agregarPago(pago);
-          return reservaRepository.save(reservaGuardada);
+        reservaGuardada.pagar(pago);
+        reservaGuardada.agregarPago(pago);
+        return reservaRepository.save(reservaGuardada);
 
     }
 

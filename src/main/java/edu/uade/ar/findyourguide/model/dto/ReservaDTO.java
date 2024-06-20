@@ -18,7 +18,7 @@ public class ReservaDTO {
     private Long id;
     private Long guiaId;
     private Long turistaId;
-    private Long servicioId;
+    private List<ServicioDTO> serviciosContratados;
     private Date fechaInicio;
     private Date fechaFin;
     private Long ciudadId;

@@ -44,6 +44,7 @@ public class ReservaController {
         try {
             ReservaEntity reserva = reservaMapper.mapFrom(reservaDTO);
             ReservaEntity reservaEntityGuardado = reservaService.save(reserva);
+
             return new ResponseEntity<>(reservaMapper.mapTo(reservaEntityGuardado), HttpStatus.CREATED);
         } catch (ReservaError e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT); //Falta DTO

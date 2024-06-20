@@ -54,7 +54,13 @@ public class ReservaEntity {
 
     @OneToMany
     private List<PagoEntity> pagos;
-    @OneToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "reserva_servicios",
+            joinColumns = @JoinColumn(name = "reserva_id"),
+            inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
     private List<ServicioEntity> serviciosContratados;
 
 

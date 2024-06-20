@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
@@ -34,9 +35,14 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public PagoEntity save(PagoEntity pago) throws PagosYaRealizadosError {
-        if (pagoRepository.findAll().size() == 2)
+        if (this.getPagosByReservaId(pago.getReserva().getId()).size() == 2)
             throw new PagosYaRealizadosError("Los pagos ya fueron realizados");
         return pagoRepository.save(pago);
+    }
+
+    private List<PagoEntity> getPagosByReservaId(Long reservaId) {
+        return StreamSupport.stream(pagoRepository.findPagoByReservaId(reservaId).spliterator(), false)
+                .toList();
     }
 
     @Override
