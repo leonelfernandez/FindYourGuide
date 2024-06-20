@@ -1,14 +1,12 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.model.states.PendienteState;
 import edu.uade.ar.findyourguide.model.states.ReservaState;
 import edu.uade.ar.findyourguide.model.factory.ReservaStateFactory;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import java.util.Date;
@@ -22,6 +20,7 @@ import java.util.List;
 @Builder
 @Table(name = "reservas")
 @Entity
+@ToString
 public class ReservaEntity {
 
     @Id
@@ -52,7 +51,13 @@ public class ReservaEntity {
 
     @OneToMany
     private List<PagoEntity> pagos;
-    @OneToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "reserva_servicios",
+            joinColumns = @JoinColumn(name = "reserva_id"),
+            inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
     private List<ServicioEntity> serviciosContratados;
 
 
@@ -67,18 +72,18 @@ public class ReservaEntity {
         this.serviciosContratados = serviciosContratados;
     }
 
-    public void pagar(PagoEntity pago) {
+    public void pagar(PagoEntity pago) throws AnticipoPagadoError, ReservaFinalizadaError, ReservaRechazadaError, PagosYaRealizadosError {
         this.estadoHandler.pagar(pago);
     }
 
-    public void cancelarReserva(Date fechaCancelacion, PagoEntity pago) {
-        this.estadoHandler.cancelarReserva(fechaCancelacion, pago);
+    public void cancelarReserva(Date fechaCancelacion) throws ReservaFinalizadaError, ReservaRechazadaError, CancelarError {
+        this.estadoHandler.cancelarReserva(fechaCancelacion);
     }
 
-    public void confirmarReserva() {
+    public void confirmarReserva() throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError {
         this.estadoHandler.confirmarReserva();
     }
-    public void rechazarReserva() {
+    public void rechazarReserva() throws PagoNoRealizadoError, ReservaFinalizadaError, ReservaConfirmadaError, ReservaRechazadaError {
         this.estadoHandler.rechazarReserva();
     }
 

@@ -1,27 +1,22 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class PagoDTO {
-
+public class ReservaSinEstadoDTO {
     private Long id;
-
-    private Float montoTotal;
-
-    private Date fechaEmision;
-
-    private String referencia;
-
-    private Long reservaId;
-
-
+    private Long guiaId;
+    private Long turistaId;
+    private Long servicioId;
+    private Date fechaInicio;
+    private Date fechaFin;
+    private Long ciudadId;
 }

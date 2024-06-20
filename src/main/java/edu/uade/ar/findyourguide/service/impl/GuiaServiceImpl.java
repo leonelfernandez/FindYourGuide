@@ -1,26 +1,50 @@
 package edu.uade.ar.findyourguide.service.impl;
 
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.entity.IdiomaEntity;
+import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
 import edu.uade.ar.findyourguide.repository.GuiaRepository;
+import edu.uade.ar.findyourguide.repository.IdiomaRepository;
+import edu.uade.ar.findyourguide.repository.ServicioRepository;
 import edu.uade.ar.findyourguide.service.IGuiaService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class GuiaServiceImpl implements IGuiaService {
 
     private GuiaRepository guiaRepository;
+    private IdiomaRepository idiomaRepository;
 
-    public GuiaServiceImpl(GuiaRepository guiaRepository) {
+    private ServicioRepository servicioRepository;
+
+    public GuiaServiceImpl(GuiaRepository guiaRepository, IdiomaRepository idiomaRepository, ServicioRepository servicioRepository) {
         this.guiaRepository = guiaRepository;
+        this.idiomaRepository = idiomaRepository;
+        this.servicioRepository = servicioRepository;
     }
 
     @Override
     public GuiaEntity save(GuiaEntity guiaEntity) {
+        List<IdiomaEntity> idiomasRepo = idiomaRepository.findAll();
+        List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
+
+        List<IdiomaEntity> filteredIdiomasRepo = idiomasRepo.stream()
+                .filter(guiaEntity.getIdiomas()::contains)
+                .toList();
+        List<ServicioEntity> filteredServiciosRepo = serviciosRepo.stream()
+                .filter(guiaEntity.getServiciosOfrecidos()::contains)
+                .toList();
+
+        guiaEntity.setIdiomas(filteredIdiomasRepo);
+        guiaEntity.setServiciosOfrecidos(filteredServiciosRepo);
+
         return guiaRepository.save(guiaEntity);
     }
 
