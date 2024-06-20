@@ -3,6 +3,7 @@ package edu.uade.ar.findyourguide.model.entity;
 import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
 import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +35,8 @@ public class PagoEntity {
     @JoinColumn(name = "reserva_id")
     private ReservaEntity reserva;
 
-//    @OneToOne
-//    private ReintegroEntity reintegro;
+    @OneToMany
+    private List<ReintegroEntity> reintegro;
 
 
     public PagoEntity(Float montoTotal, Date fechaEmision, ReservaEntity reserva, TipoPagoEnum referencia) {
@@ -44,8 +45,5 @@ public class PagoEntity {
         this.reserva = reserva;
         this.referencia = referencia;
     }
-
-
-
 
 }

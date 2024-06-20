@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.ReservaRechazadaError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
@@ -16,23 +17,23 @@ public class RechazadoState extends ReservaState{
 
 
     @Override
-    public void pagar(PagoEntity pago) {
-        //throw errror
+    public void pagar(PagoEntity pago) throws ReservaRechazadaError {
+        throw new ReservaRechazadaError("No se puede pagar una reserva rechazada");
     }
 
     @Override
-    public void cancelarReserva(Date fechaCancelacion) {
-        //throw errror
+    public void cancelarReserva(Date fechaCancelacion) throws ReservaRechazadaError {
+        throw new ReservaRechazadaError("No se puede cancelar una reserva rechazada");
     }
 
     @Override
-    public void confirmarReserva() {
-        //throw errror
+    public void confirmarReserva() throws ReservaRechazadaError {
+        throw new ReservaRechazadaError("No se puede confirmar una reserva rechazada");
     }
 
     @Override
-    public void rechazarReserva() {
-        //throw errror
+    public void rechazarReserva() throws ReservaRechazadaError {
+        throw new ReservaRechazadaError("La reserva ya fue rechazada");
     }
 
     @Override

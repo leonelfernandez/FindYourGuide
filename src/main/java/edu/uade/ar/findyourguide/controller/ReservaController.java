@@ -171,6 +171,8 @@ public class ReservaController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (PagoNoRealizadoError e) {
             throw new RuntimeException(e);
+        } catch (ReservaRechazadaError e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -188,6 +190,8 @@ public class ReservaController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (ReservaFinalizadaError e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (ReservaRechazadaError e) {
+            throw new RuntimeException(e);
         }
     }
 

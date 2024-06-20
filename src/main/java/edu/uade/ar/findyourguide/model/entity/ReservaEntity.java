@@ -1,9 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
-import edu.uade.ar.findyourguide.exceptions.AnticipoPagadoError;
-import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
-import edu.uade.ar.findyourguide.exceptions.ReservaConfirmadaError;
-import edu.uade.ar.findyourguide.exceptions.ReservaFinalizadaError;
+import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.model.states.PendienteState;
 import edu.uade.ar.findyourguide.model.states.ReservaState;
 import edu.uade.ar.findyourguide.model.factory.ReservaStateFactory;
@@ -75,18 +72,18 @@ public class ReservaEntity {
         this.serviciosContratados = serviciosContratados;
     }
 
-    public void pagar(PagoEntity pago) throws AnticipoPagadoError, ReservaFinalizadaError {
+    public void pagar(PagoEntity pago) throws AnticipoPagadoError, ReservaFinalizadaError, ReservaRechazadaError, PagosYaRealizadosError {
         this.estadoHandler.pagar(pago);
     }
 
-    public void cancelarReserva(Date fechaCancelacion) throws ReservaFinalizadaError {
+    public void cancelarReserva(Date fechaCancelacion) throws ReservaFinalizadaError, ReservaRechazadaError, CancelarError {
         this.estadoHandler.cancelarReserva(fechaCancelacion);
     }
 
-    public void confirmarReserva() throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError {
+    public void confirmarReserva() throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError {
         this.estadoHandler.confirmarReserva();
     }
-    public void rechazarReserva() throws PagoNoRealizadoError, ReservaFinalizadaError, ReservaConfirmadaError {
+    public void rechazarReserva() throws PagoNoRealizadoError, ReservaFinalizadaError, ReservaConfirmadaError, ReservaRechazadaError {
         this.estadoHandler.rechazarReserva();
     }
 

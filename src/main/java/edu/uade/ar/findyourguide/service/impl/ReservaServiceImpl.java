@@ -95,8 +95,8 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError {
         try {
-            List<PagoEntity> pagos = reserva.getPagos(); //Obtener pagos de la reserva
-            if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1) { //ESTO ME DA MIEDO -- Cancelacion en fecha de viaje (Estado Reservado)
+            List<PagoEntity> pagos = reserva.getPagos();
+            if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1) {
                 PagoEntity pago = new PagoEntity(this.calcularMontoRestante(reserva), fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION);
                 reserva.agregarPago(pago);
                 pagoRepository.save(pago);
@@ -114,7 +114,11 @@ public class ReservaServiceImpl implements IReservaService {
             return reservaRepository.save(reserva);
             } catch (ReservaFinalizadaError e) {
             throw new RuntimeException(e);
-            }
+            } catch (ReservaRechazadaError e) {
+            throw new RuntimeException(e);
+        } catch (CancelarError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Boolean verificarFechaCancelacion(ReservaEntity reserva, Date fechaCancelacion) {
@@ -123,21 +127,31 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion) {
-//        try {
-//            PagoEntity pago = reserva.getPagos().get(0);
-//            reintegroRepository.save(new ReintegroEntity(pago.getMontoAReintegrar(), fechaCancelacion,pago));
-//            reserva.rechazarReserva();
-//            return reservaRepository.findById(reserva.getId())
-//                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-//        } catch(NoSuchElementException e) {
-//            return reservaRepository.findById(reserva.getId())
-//                    .orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-//        }
-        return null;
+        try {
+            if (reserva.getEstado() == ReservaStateEnum.CONFIRMADO) {
+                PagoEntity pago = reserva.getPagos().getFirst();
+                ReintegroEntity reintegro = new ReintegroEntity(this.calcularMontoAnticipo(reserva), fechaCancelacion, reserva.getPagos().getFirst());
+                reintegroRepository.save(reintegro);
+                pago.getReintegro().add(reintegro);
+                pagoRepository.save(pago);
+            }
+            reserva.rechazarReserva();
+            return reservaRepository.save(reserva);
+        } catch(NoSuchElementException e) {
+            return null;
+        } catch (PagoNoRealizadoError e) {
+            return null;
+        } catch (ReservaConfirmadaError e) {
+            return null;
+        } catch (ReservaFinalizadaError e) {
+            return null;
+        } catch (ReservaRechazadaError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public ReservaEntity pagar(PagoEntity pago) throws PagosYaRealizadosError, AnticipoPagadoError, ReservaFinalizadaError {
+    public ReservaEntity pagar(PagoEntity pago) throws PagosYaRealizadosError, AnticipoPagadoError, ReservaFinalizadaError, ReservaRechazadaError {
         ReservaEntity reservaGuardada = reservaRepository.findById(pago.getReserva().getId()).orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
         List<PagoEntity> pagosRealizados = reservaGuardada.getPagos();
         if (pagosRealizados.size() == 2)
@@ -154,7 +168,7 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError {
+    public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError {
         reserva.confirmarReserva();
         return reservaRepository.save(reserva);
     }

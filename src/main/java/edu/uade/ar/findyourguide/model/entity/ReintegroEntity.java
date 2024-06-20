@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,8 @@ public class ReintegroEntity {
     @Temporal(TemporalType.DATE)
     private Date fechaReintegro;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "pago_id")
     private PagoEntity pago;
 
     public ReintegroEntity(Float montoReintegrado, Date fechaReintegro, PagoEntity pago) {
