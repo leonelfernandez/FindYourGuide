@@ -23,9 +23,9 @@ public interface IReservaService {
     public boolean isExists(Long id);
 
 
-    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError;
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError, ReservaRechazadaError, CancelarError;
 
-    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion);
+    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError;
 
     public Float calcularMontoTotal(ReservaEntity reserva);
 

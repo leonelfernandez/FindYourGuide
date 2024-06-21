@@ -16,21 +16,12 @@ public class CanceladoState extends ReservaState{
 
     @Override
     public void pagar(PagoEntity pago) throws PagosYaRealizadosError {
-        //throw error
         throw new PagosYaRealizadosError("No se puede pagar una reserva cancelada");
     }
 
     @Override
     public void cancelarReserva(Date fechaCancelacion) throws CancelarError {
-        /*
-        * Caso 1: Cancelacion previo a la aceptacion de parte del guia -> no se le cobrara nada, y se le reintegrara el anticipo. (Se hace todo en el estado previo y pasa a este todo)
-        * Caso 2: Cancelacion con aceptacion previa de parte del guia -> se le cobrara un recargo N (en mi caso 10%).
-        * Caso 3: Cancelacion dentro de las fechas indicadas del viaje -> se le cobrara la totalidad.
-        * */
-
         throw new CancelarError("No se puede cancelar una reserva ya cancelada");
-
-
     }
 
     @Override

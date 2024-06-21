@@ -2,10 +2,7 @@ package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.mappers.Mapper;
-import edu.uade.ar.findyourguide.model.dto.CancelacionDateDTO;
-import edu.uade.ar.findyourguide.model.dto.MontoAPagarReservaDTO;
-import edu.uade.ar.findyourguide.model.dto.PagoDTO;
-import edu.uade.ar.findyourguide.model.dto.ReservaDTO;
+import edu.uade.ar.findyourguide.model.dto.*;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.service.IGuiaService;
@@ -124,6 +121,10 @@ public class ReservaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ReservaFinalizadaError e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (ReservaRechazadaError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (CancelarError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
@@ -138,6 +139,14 @@ public class ReservaController {
             return new ResponseEntity<>(reservaMapper.mapTo(reservaRechazada),
                     HttpStatus.OK);
         } catch(EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PagoNoRealizadoError e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ReservaRechazadaError e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ReservaConfirmadaError e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ReservaFinalizadaError e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -155,7 +164,7 @@ public class ReservaController {
         }
     }
 
-    @PostMapping(path = "/pagos")
+    @PostMapping(path = "/reservas/pagos")
     public ResponseEntity<ReservaDTO> pagarReserva(@RequestBody PagoDTO pagoDTO) {
         try {
             PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
@@ -170,9 +179,9 @@ public class ReservaController {
         } catch (ReservaFinalizadaError e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (PagoNoRealizadoError e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ReservaRechazadaError e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

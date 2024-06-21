@@ -93,7 +93,7 @@ public class ReservaServiceImpl implements IReservaService {
 
 
     @Override
-    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError {
+    public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError, ReservaRechazadaError, CancelarError {
         try {
             List<PagoEntity> pagos = reserva.getPagos();
             if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1) {
@@ -113,12 +113,12 @@ public class ReservaServiceImpl implements IReservaService {
             }
             return reservaRepository.save(reserva);
             } catch (ReservaFinalizadaError e) {
-            throw new RuntimeException(e);
+                throw new ReservaFinalizadaError("Reserva finalizada, no se puede cancelar");
             } catch (ReservaRechazadaError e) {
-            throw new RuntimeException(e);
-        } catch (CancelarError e) {
-            throw new RuntimeException(e);
-        }
+                throw new ReservaRechazadaError("Reserva rechazada, no se puede cancelar");
+            } catch (CancelarError e) {
+                throw new CancelarError("Error al cancelar la reserva");
+            }
     }
 
     private Boolean verificarFechaCancelacion(ReservaEntity reserva, Date fechaCancelacion) {
@@ -126,7 +126,7 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion) {
+    public ReservaEntity rechazarReserva(ReservaEntity reserva, Date fechaCancelacion) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError {
         try {
             if (reserva.getEstado() == ReservaStateEnum.CONFIRMADO) {
                 PagoEntity pago = reserva.getPagos().getFirst();
@@ -140,13 +140,13 @@ public class ReservaServiceImpl implements IReservaService {
         } catch(NoSuchElementException e) {
             return null;
         } catch (PagoNoRealizadoError e) {
-            return null;
+            throw new PagoNoRealizadoError("Pago no realizado");
         } catch (ReservaConfirmadaError e) {
-            return null;
+            throw new ReservaConfirmadaError("Reserva confirmada, no se puede rechazar");
         } catch (ReservaFinalizadaError e) {
-            return null;
+            throw new ReservaFinalizadaError("Reserva finalizada, no se puede rechazar");
         } catch (ReservaRechazadaError e) {
-            throw new RuntimeException(e);
+            throw new ReservaRechazadaError("Reserva rechazada, no se puede rechazar");
         }
     }
 
