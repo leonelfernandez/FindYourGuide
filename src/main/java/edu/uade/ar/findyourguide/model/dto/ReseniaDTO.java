@@ -14,6 +14,6 @@ public class ReseniaDTO {
     private Long id;
     private Integer puntuacion;
     private String comentario;
-    private GuiaEntity guia;
-    private TuristaEntity turista;
+    private Long guia_id;
+    private Long turista_id;
 }
