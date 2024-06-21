@@ -1,10 +1,10 @@
 package edu.uade.ar.findyourguide.model.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +15,7 @@ import java.util.List;
 public class GuiaEntity extends UsuarioEntity {
     private Float puntajePromedio = 0.0F;
     private String credencial;
+
     private String fotoVerificacion;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -33,19 +34,14 @@ public class GuiaEntity extends UsuarioEntity {
     )
     private List<IdiomaEntity> idiomas;
 
-    @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CiudadEntity> ciudades;
 
-    @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReseniaEntity> resenias;
-
-    public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni, String fotoVerificacion) {
+    public GuiaEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto, Float puntajePromedio, String credencial, String fotoVerificacion, List<ServicioEntity> serviciosOfrecidos, List<IdiomaEntity> idiomas) {
         super(nombre, apellido, sexo, dni, email, password, telefono, foto);
-        this.credencial = credencial;
-        this.serviciosOfrecidos = serviciosOfrecidos;
         this.puntajePromedio = 0.0F;
+        this.credencial = credencial;
         this.fotoVerificacion = fotoVerificacion;
-        this.ciudades = new ArrayList<>();
-        this.resenias = new ArrayList<>();
+        this.serviciosOfrecidos = serviciosOfrecidos;
+        this.idiomas = idiomas;
     }
 }
+

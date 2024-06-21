@@ -2,13 +2,12 @@ package edu.uade.ar.findyourguide.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,10 +15,10 @@ import java.util.List;
 @SuperBuilder
 @Entity
 @Table(name = "usuarios")
-public abstract class UsuarioEntity implements Serializable {
+public abstract class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_id_seq")
-    @SequenceGenerator(name = "usuario_id_seq", sequenceName = "usuario_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "usuario_id_seq", sequenceName = "usuario_id_seq",  allocationSize=1)
     private Long id;
     private String nombre;
     private String apellido;
@@ -32,14 +31,6 @@ public abstract class UsuarioEntity implements Serializable {
     private String telefono;
     private String foto;
 
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_trofeo",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "trofeo_id")
-    )
-    private List<TrofeoEntity> trofeos;
-
 
     public UsuarioEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto) {
         this.nombre = nombre;
@@ -50,6 +41,5 @@ public abstract class UsuarioEntity implements Serializable {
         this.password = password;
         this.telefono = telefono;
         this.foto = foto;
-        this.trofeos = new ArrayList<>();
     }
 }
