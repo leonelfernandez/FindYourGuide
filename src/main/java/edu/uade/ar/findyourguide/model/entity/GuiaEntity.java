@@ -1,6 +1,5 @@
 package edu.uade.ar.findyourguide.model.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +15,6 @@ import java.util.List;
 public class GuiaEntity extends UsuarioEntity {
     private Float puntajePromedio = 0.0F;
     private String credencial;
-
     private String fotoVerificacion;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -34,16 +32,20 @@ public class GuiaEntity extends UsuarioEntity {
             inverseJoinColumns = @JoinColumn(name = "idioma_id")
     )
     private List<IdiomaEntity> idiomas;
+
     @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CiudadEntity> ciudades;
 
-    public GuiaEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto, Float puntajePromedio, String credencial, String fotoVerificacion, List<ServicioEntity> serviciosOfrecidos, List<IdiomaEntity> idiomas) {
+    @OneToMany(mappedBy = "guia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReseniaEntity> resenias;
+
+    public GuiaEntity(String nombre, String apellido, String email, String password, String telefono, String credencial, List<ServicioEntity> serviciosOfrecidos, String foto, String sexo, Integer dni, String fotoVerificacion) {
         super(nombre, apellido, sexo, dni, email, password, telefono, foto);
-        this.puntajePromedio = 0.0F;
         this.credencial = credencial;
-        this.fotoVerificacion = fotoVerificacion;
         this.serviciosOfrecidos = serviciosOfrecidos;
-        this.idiomas = idiomas;
+        this.puntajePromedio = 0.0F;
+        this.fotoVerificacion = fotoVerificacion;
+        this.ciudades = new ArrayList<>();
+        this.resenias = new ArrayList<>();
     }
 }
-

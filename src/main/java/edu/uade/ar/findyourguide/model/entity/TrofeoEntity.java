@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +18,12 @@ import lombok.NoArgsConstructor;
 public class TrofeoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trofeo_id_seq")
-    @SequenceGenerator(name = "trofeo_id_seq", sequenceName = "trofeo_id_seq",  allocationSize=1)
+    @SequenceGenerator(name = "trofeo_id_seq", sequenceName = "trofeo_id_seq", allocationSize = 1)
     private Long id;
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     private TrofeoEnum tipo;
-    @OneToMany
-    @JoinColumn(name = "usuario_id")
-    private UsuarioEntity usuario;
+
+    @ManyToMany(mappedBy = "trofeos")
+    private List<UsuarioEntity> usuarios;
 }

@@ -3,8 +3,9 @@ package edu.uade.ar.findyourguide.model.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -21,6 +22,4 @@ public class TuristaEntity extends UsuarioEntity {
     public TuristaEntity(String nombre, String apellido, String email, String password, String telefono, String sexo, Integer dni, String foto) {
         super(nombre, apellido, sexo, dni, email, password, telefono, foto);
     }
-
 }
-

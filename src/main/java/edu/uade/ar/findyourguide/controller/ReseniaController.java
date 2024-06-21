@@ -2,7 +2,12 @@ package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
+import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReseniaEntity;
+import edu.uade.ar.findyourguide.model.entity.ReseniaEntity;
+import edu.uade.ar.findyourguide.service.IGuiaService;
+import edu.uade.ar.findyourguide.service.IPagoService;
+import edu.uade.ar.findyourguide.service.IReseniaService;
 import edu.uade.ar.findyourguide.service.IReseniaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +22,10 @@ public class ReseniaController {
     private IReseniaService reseniaService;
     private Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper;
 
+    public ReseniaController(IReseniaService reseniaService, Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper) {
+        this.reseniaService = reseniaService;
+        this.reseniaMapper = reseniaMapper;
+    }
 
     @PostMapping(path = "/resenias")
     public ResponseEntity<ReseniaDTO> crearResenia(@RequestBody ReseniaDTO reseniaDTO) {

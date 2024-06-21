@@ -19,13 +19,15 @@ import java.util.List;
 public class ReseniaEntity implements IObservable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "resenia_id_seq")
-    @SequenceGenerator(name = "resenia_id_seq", sequenceName = "resenia_id_seq",  allocationSize=1)
+    @SequenceGenerator(name = "resenia_id_seq", sequenceName = "resenia_id_seq", allocationSize = 1)
     private Long id;
     private Integer puntuacion;
     private String comentario;
+
     @ManyToOne
     @JoinColumn(name = "guia_id")
     private GuiaEntity guia;
+
     @ManyToOne
     @JoinColumn(name = "turista_id")
     private TuristaEntity turista;
@@ -45,7 +47,7 @@ public class ReseniaEntity implements IObservable {
 
     @Override
     public void notificar(ReseniaEntity resenia) {
-        for(IObserver trofeo: trofeos) {
+        for (IObserver trofeo : trofeos) {
             trofeo.actualizar(resenia);
         }
     }
