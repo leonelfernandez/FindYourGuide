@@ -1,8 +1,6 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -22,8 +20,5 @@ public class UsuarioDTO {
     private String password;
     private String telefono;
     private String foto;
-
-
-
-
+    private String mensaje; // Nuevo campo para el mensaje
 }

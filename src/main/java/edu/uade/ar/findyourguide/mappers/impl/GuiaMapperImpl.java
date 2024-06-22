@@ -2,14 +2,12 @@ package edu.uade.ar.findyourguide.mappers.impl;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
-import edu.uade.ar.findyourguide.model.dto.UsuarioDTO;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GuiaMapperImpl  implements Mapper<GuiaEntity, GuiaDTO> {
+public class GuiaMapperImpl implements Mapper<GuiaEntity, GuiaDTO> {
 
     private final ModelMapper modelMapper;
 

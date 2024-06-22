@@ -1,6 +1,5 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-
 import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
 import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.IdiomaEntity;
