@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,6 +32,9 @@ public abstract class UsuarioEntity {
     private String password;
     private String telefono;
     private String foto;
+
+    @ManyToMany
+    private List<TrofeoEntity> trofeos = new ArrayList<>();
 
 
     public UsuarioEntity(String nombre, String apellido, String sexo, Integer dni, String email, String password, String telefono, String foto) {
