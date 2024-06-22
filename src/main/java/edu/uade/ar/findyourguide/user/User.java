@@ -1,9 +1,6 @@
 package edu.uade.ar.findyourguide.user;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,5 +59,23 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @RequiredArgsConstructor
+    public enum Permission {
+
+        ADMIN_READ("admin:read"),
+        ADMIN_UPDATE("admin:update"),
+        ADMIN_CREATE("admin:create"),
+        ADMIN_DELETE("admin:delete"),
+        MANAGER_READ("management:read"),
+        MANAGER_UPDATE("management:update"),
+        MANAGER_CREATE("management:create"),
+        MANAGER_DELETE("management:delete")
+
+        ;
+
+        @Getter
+        private final String permission;
     }
 }

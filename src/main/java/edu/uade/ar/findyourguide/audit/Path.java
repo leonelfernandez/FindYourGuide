@@ -1,4 +1,4 @@
-package edu.uade.ar.findyourguide.util;
+package edu.uade.ar.findyourguide.audit;
 
 import java.io.File;
 

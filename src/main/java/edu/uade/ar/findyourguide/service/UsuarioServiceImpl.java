@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static edu.uade.ar.findyourguide.util.Path.getPathOutModel;
+import static edu.uade.ar.findyourguide.audit.Path.getPathOutModel;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
