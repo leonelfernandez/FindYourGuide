@@ -4,9 +4,11 @@ import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
@@ -35,4 +37,8 @@ public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
 
     @Query("SELECT g FROM GuiaEntity g JOIN g.serviciosOfrecidos s WHERE s.id in (:idServicios)")
     public Iterable<GuiaEntity> findByServicios(List<Long> idServicios);
+
+    @Query("SELECT g FROM GuiaEntity g JOIN g.trofeos t WHERE t.id = :idTrofeo")
+    public Iterable<GuiaEntity> getGuiasConTrofeo(@Param("idTrofeo") Long idTrofeo);
+
 }

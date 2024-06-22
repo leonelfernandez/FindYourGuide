@@ -7,13 +7,11 @@ import edu.uade.ar.findyourguide.repository.GuiaRepository;
 import edu.uade.ar.findyourguide.repository.IdiomaRepository;
 import edu.uade.ar.findyourguide.repository.ServicioRepository;
 import edu.uade.ar.findyourguide.service.IGuiaService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -104,6 +102,13 @@ public class GuiaServiceImpl implements IGuiaService {
         return StreamSupport.stream(guiaRepository.findByServicios(idServicios).spliterator(), false)
                 .toList();
     }
+
+    @Override
+    public Boolean findByTrofeos(Long id) {
+        return !StreamSupport.stream(guiaRepository.getGuiasConTrofeo(id).spliterator(), false)
+                .toList().isEmpty();
+    }
+
 
     @Override
     public GuiaEntity partialUpdate(Long id, GuiaEntity guiaEntity) {

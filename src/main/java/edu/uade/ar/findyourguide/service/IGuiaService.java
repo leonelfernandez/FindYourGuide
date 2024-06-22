@@ -12,6 +12,8 @@ public interface IGuiaService {
 
     public GuiaEntity save(GuiaEntity usuario);
 
+    Boolean findByTrofeos(Long id);
+
     public GuiaEntity partialUpdate(Long clienteId, GuiaEntity usuario);
 
     public void deleteById(Long id);

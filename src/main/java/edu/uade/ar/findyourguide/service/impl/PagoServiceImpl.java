@@ -16,11 +16,13 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
+
     private PagoRepository pagoRepository;
     private IPagoAdapter pagoAdapter;
 
-    public PagoServiceImpl(PagoRepository pagoRepository) {
+    public PagoServiceImpl(PagoRepository pagoRepository, IPagoAdapter pagoAdapter) {
         this.pagoRepository = pagoRepository;
+        this.pagoAdapter = pagoAdapter;
     }
 
     @Override

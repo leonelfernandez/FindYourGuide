@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class TuristaServiceImpl implements ITuristaService {
@@ -58,5 +59,11 @@ public class TuristaServiceImpl implements ITuristaService {
     @Override
     public boolean isExists(Long id) {
         return turistaRepository.existsById(id);
+    }
+
+    @Override
+    public Boolean findByTrofeos(Long id) {
+        return !StreamSupport.stream(turistaRepository.getTuristasConTrofeo(id).spliterator(), false)
+                .toList().isEmpty();
     }
 }

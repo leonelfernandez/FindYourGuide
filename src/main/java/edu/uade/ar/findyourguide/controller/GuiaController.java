@@ -5,9 +5,13 @@ import edu.uade.ar.findyourguide.model.dto.*;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.enums.TipoNotificacionEnum;
+import edu.uade.ar.findyourguide.model.strategy.impl.PushNotificationStrategyImpl;
 import edu.uade.ar.findyourguide.service.IGuiaService;
 import edu.uade.ar.findyourguide.service.IGuiaService;
+import edu.uade.ar.findyourguide.service.INotificacionService;
 import edu.uade.ar.findyourguide.service.IVerificacionService;
+import edu.uade.ar.findyourguide.util.GuiaMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,25 +24,25 @@ import java.util.stream.Collectors;
 public class GuiaController {
 
     private IGuiaService guiaService;
-
     private IVerificacionService verificacionService;
     private Mapper<GuiaEntity, GuiaDTO> guiaMapper;
+    private INotificacionService notificacionService;
 
-    public GuiaController(IGuiaService guiaService, Mapper<GuiaEntity, GuiaDTO> guiaMapper, IVerificacionService verificacionService) {
+    public GuiaController(IGuiaService guiaService, IVerificacionService verificacionService, Mapper<GuiaEntity, GuiaDTO> guiaMapper, INotificacionService notificacionService) {
         this.guiaService = guiaService;
-        this.guiaMapper = guiaMapper;
         this.verificacionService = verificacionService;
-
+        this.guiaMapper = guiaMapper;
+        this.notificacionService = notificacionService;
     }
 
     @PostMapping(path = "/guias")
-    public ResponseEntity<GuiaDTO> crearGuia(@RequestBody GuiaDTO guiaDto) {
+    public ResponseEntity<NotifGuiaCreadoDTO> crearGuia(@RequestBody GuiaDTO guiaDto) {
         GuiaEntity guia = guiaMapper.mapFrom(guiaDto);
-        if (!verificacionService.verificarCredencialGuia(guia)) //Esto va en el servicio de abril en el registro
-            //notificacionService.enviarNotificacion(guia, mensaje);
-            return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.BAD_REQUEST);
+        if (verificacionService.verificarCredencialGuia(guia)) {
+            notificacionService.enviarNotificacion(guia, GuiaMessages.credencialValidada(), TipoNotificacionEnum.PUSH_NOTIFICATION);
+        }
         GuiaEntity guiaEntityGuardado = guiaService.save(guia);
-        return new ResponseEntity<>(guiaMapper.mapTo(guiaEntityGuardado), HttpStatus.CREATED);
+        return new ResponseEntity<>(new NotifGuiaCreadoDTO(GuiaMessages.credencialValidada(), guiaMapper.mapTo(guiaEntityGuardado)), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/guias")

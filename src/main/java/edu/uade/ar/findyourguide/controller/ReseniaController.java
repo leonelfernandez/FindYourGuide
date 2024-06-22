@@ -1,12 +1,18 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
+import edu.uade.ar.findyourguide.model.dto.NotifReseniaDTO;
+import edu.uade.ar.findyourguide.model.dto.NotifTuristaReseniaDTO;
 import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
 import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReseniaEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.model.enums.TipoNotificacionEnum;
+import edu.uade.ar.findyourguide.service.*;
 import edu.uade.ar.findyourguide.service.IReseniaService;
-import edu.uade.ar.findyourguide.service.IReseniaService;
+import edu.uade.ar.findyourguide.service.impl.TuristaServiceImpl;
+import edu.uade.ar.findyourguide.util.ReseniaMessages;
+import edu.uade.ar.findyourguide.util.TuristaMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +28,43 @@ public class ReseniaController {
 
     private Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper;
 
-    public ReseniaController(IReseniaService reseniaService, Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper) {
+    private ITuristaService turistaService;
+
+    private INotificacionService notificacionService;
+
+    private IGuiaService guiaService;
+
+
+    public ReseniaController(IReseniaService reseniaService, Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper, ITuristaService turistaService, INotificacionService notificacionService, IGuiaService guiaService) {
         this.reseniaService = reseniaService;
         this.reseniaMapper = reseniaMapper;
+        this.turistaService = turistaService;
+        this.notificacionService = notificacionService;
+        this.guiaService = guiaService;
+    }
+
+    @GetMapping(path = "/resenias/calificar/{id}")
+    public ResponseEntity<NotifTuristaReseniaDTO> calificarResenia(@PathVariable("id") Long id) {
+        TuristaEntity turista = turistaService.findById(id).orElseThrow(() -> new RuntimeException("Turista no encontrado"));
+        if (notificacionService.diaParaenviarResenia(turista)) { //Valido si es el dia para enviar la calificacion
+            notificacionService.enviarNotificacion(turista, "Califica tu experiencia con FindYourGuide", TipoNotificacionEnum.PUSH_NOTIFICATION);
+            notificacionService.enviarNotificacion(turista, "Califica tu experiencia con FindYourGuide", TipoNotificacionEnum.EMAIL);
+        }
+        return new ResponseEntity<>(new NotifTuristaReseniaDTO(TuristaMessages.calificaFindYourGuide()), HttpStatus.OK);
     }
 
     @PostMapping(path = "/resenias")
-    public ResponseEntity<ReseniaDTO> crearResenia(@RequestBody ReseniaDTO reseniaDTO) {
+    public ResponseEntity<NotifReseniaDTO> crearResenia(@RequestBody ReseniaDTO reseniaDTO) {
         ReseniaEntity resenia = reseniaMapper.mapFrom(reseniaDTO);
         ReseniaEntity reseniaEntityGuardado = reseniaService.save(resenia);
-        return new ResponseEntity<>(reseniaMapper.mapTo(reseniaEntityGuardado), HttpStatus.CREATED);
+        if (guiaService.findByTrofeos(reseniaEntityGuardado.getGuia().getId())) {
+            notificacionService.enviarNotificacion(reseniaEntityGuardado.getGuia(), ReseniaMessages.trofeoObtenido(), TipoNotificacionEnum.PUSH_NOTIFICATION);
+            return new ResponseEntity<>(new NotifReseniaDTO(ReseniaMessages.trofeoObtenido(), reseniaMapper.mapTo(reseniaEntityGuardado)), HttpStatus.CREATED);
+        } else if (turistaService.findByTrofeos(reseniaEntityGuardado.getTurista().getId())) {
+            notificacionService.enviarNotificacion(reseniaEntityGuardado.getTurista(), ReseniaMessages.trofeoObtenido(), TipoNotificacionEnum.PUSH_NOTIFICATION);
+            return new ResponseEntity<>(new NotifReseniaDTO(ReseniaMessages.trofeoObtenido(), reseniaMapper.mapTo(reseniaEntityGuardado)), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(new NotifReseniaDTO(ReseniaMessages.reseniaCreada(), reseniaMapper.mapTo(reseniaEntityGuardado)), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/resenias")

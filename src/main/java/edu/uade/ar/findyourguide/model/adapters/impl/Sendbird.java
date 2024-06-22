@@ -1,6 +1,6 @@
 package edu.uade.ar.findyourguide.model.adapters.impl;
 
-import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
+import edu.uade.ar.findyourguide.model.adapters.IAdapterChat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 @NoArgsConstructor
 @Data
-public class Stripe implements IPagoAdapter {
+public class Sendbird implements IAdapterChat {
 
     @Override
-    public Boolean realizarPago(Float montoAPagar) {
+    public Boolean iniciarChat(String guia, String turista) {
         return Boolean.TRUE;
     }
 }

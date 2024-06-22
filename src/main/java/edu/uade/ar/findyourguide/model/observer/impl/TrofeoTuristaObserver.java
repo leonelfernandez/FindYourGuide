@@ -30,7 +30,6 @@ public class TrofeoTuristaObserver implements IObserver {
     @Override
     public void actualizar(ReseniaEntity resenia) {
         TuristaEntity turista = turistaRepository.findById(resenia.getTurista().getId()).orElseThrow();
-        List<ReseniaEntity> resenias = StreamSupport.stream(reseniaRepository.getReseniasByTurista(turista.getId()).spliterator(), false).toList();
         Integer cantReseniasDif = reseniaRepository.getCantidadReseniasADiferentesGuias(turista.getId());
 
         if (cantReseniasDif + 1 > 10 && turista.getTrofeos().isEmpty()) { //En este momento aun no fue persistida la ultima resenia
