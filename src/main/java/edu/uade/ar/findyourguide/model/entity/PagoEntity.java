@@ -38,6 +38,9 @@ public class PagoEntity {
     @OneToMany
     private List<ReintegroEntity> reintegro;
 
+    @OneToOne
+    private FacturaEntity factura;
+
 
     public PagoEntity(Float montoTotal, Date fechaEmision, ReservaEntity reserva, TipoPagoEnum referencia) {
         this.montoTotal = montoTotal;

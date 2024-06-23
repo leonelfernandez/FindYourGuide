@@ -69,4 +69,9 @@ public class ReseniaServiceImpl implements IReseniaService {
     public boolean isExists(Long id) {
         return reseniaRepository.existsById(id);
     }
+
+    @Override
+    public Iterable<ReseniaEntity> getReseniasByGuia(Long id) {
+        return reseniaRepository.getReseniasByGuia(id);
+    }
 }

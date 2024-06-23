@@ -1,9 +1,6 @@
 package edu.uade.ar.findyourguide.service.impl;
 
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.IdiomaEntity;
-import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
-import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.model.entity.*;
 import edu.uade.ar.findyourguide.repository.GuiaRepository;
 import edu.uade.ar.findyourguide.repository.IdiomaRepository;
 import edu.uade.ar.findyourguide.repository.ServicioRepository;
@@ -12,6 +9,7 @@ import edu.uade.ar.findyourguide.service.IAuthenticationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImpl implements IAuthenticationService {
@@ -48,6 +46,16 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Override
     public TuristaEntity registrarTurista(TuristaEntity turista) {
         return turistaRepository.save(turista);
+    }
+
+    @Override
+    public UsuarioEntity login(String email, String password) {
+        Optional<GuiaEntity> guiaOpt = guiaRepository.findByEmailAndPassword(email, password);
+        if(guiaOpt.isPresent()) {
+            return guiaOpt.get();
+        }
+        return turistaRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
 }

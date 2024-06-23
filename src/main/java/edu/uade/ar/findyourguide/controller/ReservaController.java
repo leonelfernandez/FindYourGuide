@@ -156,23 +156,6 @@ public class ReservaController {
         }
     }
 
-
-    @GetMapping(path = "/reservas/facturas/{id}")
-    public ResponseEntity<FacturaDTO> generarFactura(@PathVariable("id") Long id) {
-//        try {
-//            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
-//            reservaService.generarFactura(reserva);
-//            Float montoTotal = reservaService.calcularMontoTotal(reserva);
-//            Float montoAnticipo = reservaService.calcularMontoAnticipo(reserva);
-//            Float montoRestante = reservaService.calcularMontoRestante(reserva);
-//            return new ResponseEntity<>(new FacturaDTO(montoRestante, reserva.getCiudad().getNombre(), reserva.getFechaFin()), HttpStatus.OK);
-//        } catch(EntityNotFoundException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-        return null;
-    }
-
-
     @PostMapping(path = "/reservas/pagos")
     public ResponseEntity<NotifReservaDTO> pagarReserva(@RequestBody PagoDTO pagoDTO) {
         try {

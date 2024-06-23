@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.service;
 
 import edu.uade.ar.findyourguide.exceptions.*;
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -39,4 +40,7 @@ public interface IReservaService {
 
     public void realizarReintegro(PagoEntity pago, Date fechaCancelacion);
 
+    public Iterable<ReservaEntity> getReservasFinalizadasByGuia(Long id);
+
+    public Iterable<CiudadEntity> getAllCiudadesIn(List<Long> ids);
 }

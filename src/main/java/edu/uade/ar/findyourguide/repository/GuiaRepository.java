@@ -41,4 +41,7 @@ public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
     @Query("SELECT g FROM GuiaEntity g JOIN g.trofeos t WHERE t.id = :idTrofeo")
     public Iterable<GuiaEntity> getGuiasConTrofeo(@Param("idTrofeo") Long idTrofeo);
 
+    @Query("SELECT g FROM GuiaEntity g WHERE g.email = :email AND g.password = :password")
+    public Optional<GuiaEntity> findByEmailAndPassword(String email, String password);
+
 }

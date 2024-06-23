@@ -23,5 +23,7 @@ public class PagoDTO {
 
     private Long reservaId;
 
+    private Long facturaId;
+
 
 }

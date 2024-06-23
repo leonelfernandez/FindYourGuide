@@ -5,6 +5,7 @@ import edu.uade.ar.findyourguide.exceptions.PagosYaRealizadosError;
 import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
+import edu.uade.ar.findyourguide.repository.FacturaRepository;
 import edu.uade.ar.findyourguide.repository.PagoRepository;
 import edu.uade.ar.findyourguide.service.IPagoService;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class PagoServiceImpl implements IPagoService {
     public PagoEntity save(PagoEntity pago) throws PagosYaRealizadosError {
         if (this.getPagosByReservaId(pago.getReserva().getId()).size() == 2)
             throw new PagosYaRealizadosError("Los pagos ya fueron realizados");
+
+
         return pagoRepository.save(pago);
     }
 

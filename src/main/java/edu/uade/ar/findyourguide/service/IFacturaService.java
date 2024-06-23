@@ -2,23 +2,27 @@ package edu.uade.ar.findyourguide.service;
 
 import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
 import edu.uade.ar.findyourguide.exceptions.PagosYaRealizadosError;
+import edu.uade.ar.findyourguide.model.entity.FacturaEntity;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
-import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface IPagoService {
-    public List<PagoEntity> findAll();
+public interface IFacturaService {
 
-    public Optional<PagoEntity> findById(Long id);
+    public List<FacturaEntity> findAll();
 
-    public PagoEntity save(PagoEntity pago) throws PagoNoRealizadoError, PagosYaRealizadosError;
+    public Optional<FacturaEntity> findById(Long id);
 
-    public PagoEntity partialUpdate(Long pagoId, PagoEntity pago);
+    public FacturaEntity save(FacturaEntity factura);
+
+    public FacturaEntity partialUpdate(Long facturaId, FacturaEntity factura);
 
     public void deleteById(Long id);
 
     public boolean isExists(Long id);
 
+
 }
+
+

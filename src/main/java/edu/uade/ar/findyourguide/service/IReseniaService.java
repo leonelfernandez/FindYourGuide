@@ -20,4 +20,5 @@ public interface IReseniaService {
     public boolean isExists(Long id);
 
 
+    public Iterable<ReseniaEntity> getReseniasByGuia(Long id);
 }

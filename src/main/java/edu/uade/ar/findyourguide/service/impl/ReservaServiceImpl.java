@@ -3,7 +3,6 @@ package edu.uade.ar.findyourguide.service.impl;
 
 import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
-import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
 import edu.uade.ar.findyourguide.model.entity.*;
 import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
@@ -29,16 +28,22 @@ public class ReservaServiceImpl implements IReservaService {
     private IPagoAdapter pagoAdapter;
 
     private Float montoPenalizacion = 0.20F;
+
     private ServicioRepository servicioRepository;
 
+    private CiudadRepository ciudadRepository;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository, ServicioRepository servicioRepository) {
+
+    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository, IPagoAdapter pagoAdapter, ServicioRepository servicioRepository, CiudadRepository ciudadRepository) {
         this.reservaRepository = reservaRepository;
         this.pagoRepository = pagoRepository;
         this.reintegroRepository = reintegroRepository;
         this.tarifaRepository = tarifaRepository;
-        this.pagoAdapter = new Stripe();
+        this.porcentajeAnticipo = 0.10F;
+        this.pagoAdapter = pagoAdapter;
+        this.montoPenalizacion = 0.20F;
         this.servicioRepository = servicioRepository;
+        this.ciudadRepository = ciudadRepository;
     }
 
     @Override
@@ -206,6 +211,14 @@ public class ReservaServiceImpl implements IReservaService {
         this.reintegroRepository.save(new ReintegroEntity(this.getMontoAReintegrar(pago), fechaCancelacion, pago));
     }
 
+    @Override
+    public Iterable<ReservaEntity> getReservasFinalizadasByGuia(Long id) {
+        return reservaRepository.getReservasFinalizadasByGuia(id);
+    }
 
+    @Override
+    public Iterable<CiudadEntity> getAllCiudadesIn(List<Long> ids) {
+        return ciudadRepository.getAllCiudadesById(ids);
+    }
 
 }

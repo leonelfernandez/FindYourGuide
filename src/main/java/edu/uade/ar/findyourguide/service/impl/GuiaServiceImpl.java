@@ -104,6 +104,11 @@ public class GuiaServiceImpl implements IGuiaService {
     }
 
     @Override
+    public Optional<GuiaEntity> findByEmailAndPassword(String email, String password) {
+        return guiaRepository.findByEmailAndPassword(email, password);
+    }
+
+    @Override
     public Boolean findByTrofeos(Long id) {
         return !StreamSupport.stream(guiaRepository.getGuiasConTrofeo(id).spliterator(), false)
                 .toList().isEmpty();

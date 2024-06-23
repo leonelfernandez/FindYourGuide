@@ -34,4 +34,6 @@ public interface IGuiaService {
     public List<GuiaEntity> findByIdiomas(List<Long> idioma);
 
     public List<GuiaEntity> findByServicios(List<Long> idServicios);
+
+    public Optional<GuiaEntity> findByEmailAndPassword(String email, String password);
 }
