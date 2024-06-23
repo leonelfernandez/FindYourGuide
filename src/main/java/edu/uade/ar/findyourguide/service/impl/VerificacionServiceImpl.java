@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class VerificacionServiceImpl implements IVerificacionService {
 
-
+    @Autowired
     IAdapterIAVerificacion adapterVerificacion;
 
     public VerificacionServiceImpl(IAdapterIAVerificacion adapterVerificacion) {

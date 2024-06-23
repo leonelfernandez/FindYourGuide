@@ -2,8 +2,8 @@ package edu.uade.ar.findyourguide.model.enums;
 
 public enum ServiciosEnum {
 
-    TOURGRUPAL,
-    TOURINDIVIDUAL,
+    TOUR_GRUPAL,
+    TOUR_INDIVIDUAL,
     TRADUCCION
 
 }

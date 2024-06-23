@@ -1,6 +1,6 @@
 package edu.uade.ar.findyourguide.service;
 
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
 
 import java.util.List;
@@ -21,5 +21,7 @@ public interface ITuristaService {
     public boolean isExists(Long id);
 
 
+    public Boolean findByTrofeos(Long id);
 
+    public List<CiudadEntity> findViajesRealizados(TuristaEntity turista);
 }

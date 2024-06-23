@@ -3,43 +3,53 @@ package edu.uade.ar.findyourguide.controller;
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.*;
 import edu.uade.ar.findyourguide.model.dto.GuiaDTO;
+import edu.uade.ar.findyourguide.model.entity.*;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.enums.TipoNotificacionEnum;
+import edu.uade.ar.findyourguide.model.strategy.impl.PushNotificationStrategyImpl;
+import edu.uade.ar.findyourguide.service.*;
 import edu.uade.ar.findyourguide.service.IGuiaService;
-import edu.uade.ar.findyourguide.service.IGuiaService;
-import edu.uade.ar.findyourguide.service.IVerificacionService;
+import edu.uade.ar.findyourguide.util.GuiaMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 public class GuiaController {
 
     private IGuiaService guiaService;
-
     private IVerificacionService verificacionService;
     private Mapper<GuiaEntity, GuiaDTO> guiaMapper;
+    private INotificacionService notificacionService;
+    private IReseniaService reseniaService;
+    private IReservaService reservaService;
+    private Mapper<ReservaEntity, ReservaDTO> reservaMapper;
+    private Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper;
 
-    public GuiaController(IGuiaService guiaService, Mapper<GuiaEntity, GuiaDTO> guiaMapper, IVerificacionService verificacionService) {
+
+    public GuiaController(IGuiaService guiaService, IVerificacionService verificacionService, Mapper<GuiaEntity, GuiaDTO> guiaMapper, INotificacionService notificacionService, IReseniaService reseniaService, IReservaService reservaService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper) {
         this.guiaService = guiaService;
-        this.guiaMapper = guiaMapper;
         this.verificacionService = verificacionService;
-
+        this.guiaMapper = guiaMapper;
+        this.notificacionService = notificacionService;
+        this.reseniaService = reseniaService;
+        this.reservaService = reservaService;
+        this.reservaMapper = reservaMapper;
+        this.reseniaMapper = reseniaMapper;
     }
 
     @PostMapping(path = "/guias")
-    public ResponseEntity<GuiaDTO> crearGuia(@RequestBody GuiaDTO guiaDto) {
+    public ResponseEntity<NotifGuiaCreadoDTO> crearGuia(@RequestBody GuiaDTO guiaDto) {
         GuiaEntity guia = guiaMapper.mapFrom(guiaDto);
-        if (guiaService.isExists(guia.getId()))
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        if (!verificacionService.verificarCredencialGuia(guia))
-            return new ResponseEntity<>(guiaMapper.mapTo(guia), HttpStatus.BAD_REQUEST);
+        if (verificacionService.verificarCredencialGuia(guia)) {
+            notificacionService.enviarNotificacion(guia, GuiaMessages.credencialValidada(), TipoNotificacionEnum.PUSH_NOTIFICATION);
+        }
         GuiaEntity guiaEntityGuardado = guiaService.save(guia);
-        return new ResponseEntity<>(guiaMapper.mapTo(guiaEntityGuardado), HttpStatus.CREATED);
+        return new ResponseEntity<>(new NotifGuiaCreadoDTO(GuiaMessages.credencialValidada(), guiaMapper.mapTo(guiaEntityGuardado)), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/guias")
@@ -51,12 +61,21 @@ public class GuiaController {
     }
 
     @GetMapping(path = "/guias/{id}")
-    public ResponseEntity<GuiaDTO> getGuia(@PathVariable("id") Long id) {
-        Optional<GuiaEntity> foundGuia = guiaService.findById(id);
-        return foundGuia.map(guiaEntity -> {
-            GuiaDTO guiaDTO = guiaMapper.mapTo(guiaEntity);
+    public ResponseEntity<GuiaCompletoDTO> getGuia(@PathVariable("id") Long id) {
+        try {
+            GuiaEntity foundGuia = guiaService.findById(id).orElseThrow(() -> new RuntimeException("Guia no encontrado"));
+            List<ReseniaDTO> resenias = StreamSupport.stream(reseniaService.getReseniasByGuia(id).spliterator(), false)
+                    .toList().stream().map(re -> reseniaMapper.mapTo(re)).toList();
+            List<Long> ciudadesViajadasId = StreamSupport.stream(reservaService.getReservasFinalizadasByGuia(id).spliterator(), false)
+                    .toList().stream().map(res -> res.getCiudad().getId()).toList();
+            List<CiudadEntity> ciudadesViajadas = StreamSupport.stream(reservaService.getAllCiudadesIn(ciudadesViajadasId).spliterator(), false).toList();
+            List<CiudadDTO> ciudadesViajadasDTO = ciudadesViajadas.stream().map(c -> new CiudadDTO(c.getId(), c.getNombre(), c.getPais())).toList();
+            GuiaCompletoDTO guiaDTO = new GuiaCompletoDTO(guiaMapper.mapTo(foundGuia), resenias, new ViajesRealizadosDTO(ciudadesViajadasDTO));
             return new ResponseEntity<>(guiaDTO, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch(RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PutMapping(path = "/guias/{id}")
@@ -154,6 +173,13 @@ public class GuiaController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping(path = "/guias/viajes/{id}")
+    public ResponseEntity<ViajesRealizadosDTO> getGuiasByViaje(@PathVariable("id") Long id) {
+        GuiaEntity guia = guiaService.findById(id).orElseThrow(() -> new RuntimeException("Guia no encontrado"));
+        List<CiudadEntity> viajesRealizados = guiaService.findViajesRealizados(guia);
+        List<CiudadDTO> ciudadesDTO = viajesRealizados.stream().map(c -> new CiudadDTO(c.getId(), c.getNombre(), c.getPais())).toList();
+        return new ResponseEntity<>(new ViajesRealizadosDTO(ciudadesDTO),HttpStatus.OK);
+    }
 
 
 }

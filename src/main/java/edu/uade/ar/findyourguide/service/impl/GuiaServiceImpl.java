@@ -1,7 +1,10 @@
 package edu.uade.ar.findyourguide.service.impl;
 
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
+import edu.uade.ar.findyourguide.model.entity.*;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.repository.GuiaRepository;
+import edu.uade.ar.findyourguide.repository.IdiomaRepository;
+import edu.uade.ar.findyourguide.repository.ServicioRepository;
 import edu.uade.ar.findyourguide.service.IGuiaService;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +17,31 @@ import java.util.stream.StreamSupport;
 public class GuiaServiceImpl implements IGuiaService {
 
     private GuiaRepository guiaRepository;
+    private IdiomaRepository idiomaRepository;
 
-    public GuiaServiceImpl(GuiaRepository guiaRepository) {
+    private ServicioRepository servicioRepository;
+
+    public GuiaServiceImpl(GuiaRepository guiaRepository, IdiomaRepository idiomaRepository, ServicioRepository servicioRepository) {
         this.guiaRepository = guiaRepository;
+        this.idiomaRepository = idiomaRepository;
+        this.servicioRepository = servicioRepository;
     }
 
     @Override
     public GuiaEntity save(GuiaEntity guiaEntity) {
+        List<IdiomaEntity> idiomasRepo = idiomaRepository.findAll();
+        List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
+
+        List<IdiomaEntity> filteredIdiomasRepo = idiomasRepo.stream()
+                .filter(guiaEntity.getIdiomas()::contains)
+                .toList();
+        List<ServicioEntity> filteredServiciosRepo = serviciosRepo.stream()
+                .filter(guiaEntity.getServiciosOfrecidos()::contains)
+                .toList();
+
+        guiaEntity.setIdiomas(filteredIdiomasRepo);
+        guiaEntity.setServiciosOfrecidos(filteredServiciosRepo);
+
         return guiaRepository.save(guiaEntity);
     }
 
@@ -82,6 +103,23 @@ public class GuiaServiceImpl implements IGuiaService {
     }
 
     @Override
+    public Optional<GuiaEntity> findByEmailAndPassword(String email, String password) {
+        return guiaRepository.findByEmailAndPassword(email, password);
+    }
+
+    @Override
+    public List<CiudadEntity> findViajesRealizados(GuiaEntity guia) {
+        return StreamSupport.stream(guiaRepository.findViajesRealizados(guia.getId(), ReservaStateEnum.FINALIZADO).spliterator(), false).toList();
+    }
+
+    @Override
+    public Boolean findByTrofeos(Long id) {
+        return !StreamSupport.stream(guiaRepository.getGuiasConTrofeo(id).spliterator(), false)
+                .toList().isEmpty();
+    }
+
+
+    @Override
     public GuiaEntity partialUpdate(Long id, GuiaEntity guiaEntity) {
         guiaEntity.setId(id);
 
@@ -93,13 +131,11 @@ public class GuiaServiceImpl implements IGuiaService {
             Optional.ofNullable(guiaEntity.getFoto()).ifPresent(usuario::setFoto);
             Optional.ofNullable(guiaEntity.getEmail()).ifPresent(usuario::setEmail);
             Optional.ofNullable(guiaEntity.getPassword()).ifPresent(usuario::setPassword);
-            Optional.ofNullable(guiaEntity.getCiudades()).ifPresent(usuario::setCiudades);
             Optional.ofNullable(guiaEntity.getCredencial()).ifPresent(usuario::setCredencial);
             Optional.ofNullable(guiaEntity.getFotoVerificacion()).ifPresent(usuario::setFotoVerificacion);
             Optional.ofNullable(guiaEntity.getIdiomas()).ifPresent(usuario::setIdiomas);
             Optional.ofNullable(guiaEntity.getTelefono()).ifPresent(usuario::setTelefono);
             Optional.ofNullable(guiaEntity.getPuntajePromedio()).ifPresent(usuario::setPuntajePromedio);
-            Optional.ofNullable(guiaEntity.getServiciosOfrecidos()).ifPresent(usuario::setServiciosOfrecidos);
             return guiaRepository.save(usuario);
         }).orElseThrow(() -> new RuntimeException("Usuario no existe"));
     }

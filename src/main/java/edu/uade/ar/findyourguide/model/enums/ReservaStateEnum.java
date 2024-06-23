@@ -5,7 +5,9 @@ public enum ReservaStateEnum {
     PENDIENTE,
     CONFIRMADO,
     RESERVADO,
-    CANCELADO
+    CANCELADO,
+    FINALIZADO,
+    RECHAZADO
 
 
 }

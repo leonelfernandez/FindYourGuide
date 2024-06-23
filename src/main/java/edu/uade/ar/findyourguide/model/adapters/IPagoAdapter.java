@@ -2,5 +2,5 @@ package edu.uade.ar.findyourguide.model.adapters;
 
 public interface IPagoAdapter {
 
-    public String realizarPago();
+    public Boolean realizarPago(Float montoAPagar);
 }
