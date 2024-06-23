@@ -14,13 +14,13 @@ import java.util.List;
 
 
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "reservas")
 @Entity
-@ToString
 public class ReservaEntity {
 
     @Id
@@ -37,6 +37,9 @@ public class ReservaEntity {
     @ManyToOne
     @JoinColumn(name = "ciudad_id")
     private CiudadEntity ciudad;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaReservaIniciada;
 
     @Temporal(TemporalType.DATE)
     private Date fechaInicio;
@@ -59,8 +62,6 @@ public class ReservaEntity {
             inverseJoinColumns = @JoinColumn(name = "servicio_id")
     )
     private List<ServicioEntity> serviciosContratados;
-
-
 
 
     public ReservaEntity(GuiaEntity guia, TuristaEntity turista, ReservaStateEnum estado, ReservaState estadoHandler, List<PagoEntity> pagos, List<ServicioEntity> serviciosContratados) {
@@ -86,6 +87,9 @@ public class ReservaEntity {
     public void rechazarReserva() throws PagoNoRealizadoError, ReservaFinalizadaError, ReservaConfirmadaError, ReservaRechazadaError {
         this.estadoHandler.rechazarReserva();
     }
+    public void finalizarReserva() throws FinalizadoError {
+        this.estadoHandler.finalizarReserva();
+    }
 
     public void cambiarEstado(ReservaState estado) {
         this.estadoHandler = estado;
@@ -106,6 +110,7 @@ public class ReservaEntity {
     public void agregarPago(PagoEntity pago) {
         this.pagos.add(pago);
     }
+
 
 
 }

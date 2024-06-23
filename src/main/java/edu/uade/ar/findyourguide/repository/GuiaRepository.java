@@ -1,7 +1,9 @@
 package edu.uade.ar.findyourguide.repository;
 
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.UsuarioEntity;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,4 +46,6 @@ public interface GuiaRepository extends JpaRepository<GuiaEntity, Long> {
     @Query("SELECT g FROM GuiaEntity g WHERE g.email = :email AND g.password = :password")
     public Optional<GuiaEntity> findByEmailAndPassword(String email, String password);
 
+    @Query("SELECT r.ciudad FROM GuiaEntity t JOIN ReservaEntity r ON r.guia.id = :id AND r.estado = :estado")
+    Iterable<CiudadEntity> findViajesRealizados(@Param("id") Long id, @Param("estado") ReservaStateEnum estado);
 }

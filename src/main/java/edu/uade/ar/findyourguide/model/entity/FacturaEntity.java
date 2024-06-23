@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.model.entity;
 
 
+import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,11 +24,16 @@ public class FacturaEntity {
     @SequenceGenerator(name = "factura_id_seq", sequenceName = "factura_id_seq",  allocationSize=1)
     private Long id;
 
-    private String detalle;
+    @Enumerated(EnumType.STRING)
+    private TipoPagoEnum detalle;
 
     private Float monto;
 
     private Date fecha;
 
-
+    public FacturaEntity(TipoPagoEnum detalle, Float monto, Date fecha) {
+        this.detalle = detalle;
+        this.monto = monto;
+        this.fecha = fecha;
+    }
 }

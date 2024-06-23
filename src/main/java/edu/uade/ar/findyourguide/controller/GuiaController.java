@@ -69,7 +69,8 @@ public class GuiaController {
             List<Long> ciudadesViajadasId = StreamSupport.stream(reservaService.getReservasFinalizadasByGuia(id).spliterator(), false)
                     .toList().stream().map(res -> res.getCiudad().getId()).toList();
             List<CiudadEntity> ciudadesViajadas = StreamSupport.stream(reservaService.getAllCiudadesIn(ciudadesViajadasId).spliterator(), false).toList();
-            GuiaCompletoDTO guiaDTO = new GuiaCompletoDTO(guiaMapper.mapTo(foundGuia), resenias, ciudadesViajadas.stream().map(c -> new ViajesRealizadosDTO(c.getNombre())).toList());
+            List<CiudadDTO> ciudadesViajadasDTO = ciudadesViajadas.stream().map(c -> new CiudadDTO(c.getId(), c.getNombre(), c.getPais())).toList();
+            GuiaCompletoDTO guiaDTO = new GuiaCompletoDTO(guiaMapper.mapTo(foundGuia), resenias, new ViajesRealizadosDTO(ciudadesViajadasDTO));
             return new ResponseEntity<>(guiaDTO, HttpStatus.OK);
         } catch(RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -170,6 +171,14 @@ public class GuiaController {
         return guias.stream()
                 .map(guiaMapper::mapTo)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/guias/viajes/{id}")
+    public ResponseEntity<ViajesRealizadosDTO> getGuiasByViaje(@PathVariable("id") Long id) {
+        GuiaEntity guia = guiaService.findById(id).orElseThrow(() -> new RuntimeException("Guia no encontrado"));
+        List<CiudadEntity> viajesRealizados = guiaService.findViajesRealizados(guia);
+        List<CiudadDTO> ciudadesDTO = viajesRealizados.stream().map(c -> new CiudadDTO(c.getId(), c.getNombre(), c.getPais())).toList();
+        return new ResponseEntity<>(new ViajesRealizadosDTO(ciudadesDTO),HttpStatus.OK);
     }
 
 

@@ -1,7 +1,10 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
+import edu.uade.ar.findyourguide.model.dto.CiudadDTO;
 import edu.uade.ar.findyourguide.model.dto.TuristaDTO;
+import edu.uade.ar.findyourguide.model.dto.ViajesRealizadosDTO;
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
 import edu.uade.ar.findyourguide.service.ITuristaService;
 
@@ -85,6 +88,15 @@ public class TuristaController {
     public ResponseEntity deleteTurista(@PathVariable("id") Long id) {
         turistaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @GetMapping(path = "/turistas/viajes/{id}")
+    public ResponseEntity<ViajesRealizadosDTO> getTuristasByViaje(@PathVariable("id") Long id) {
+        TuristaEntity turista = turistaService.findById(id).orElseThrow(() -> new RuntimeException("Turista no encontrado"));
+        List<CiudadEntity> viajesRealizados = turistaService.findViajesRealizados(turista);
+        List<CiudadDTO> ciudadesDTO = viajesRealizados.stream().map(c -> new CiudadDTO(c.getId(), c.getNombre(), c.getPais())).toList();
+        return new ResponseEntity<>(new ViajesRealizadosDTO(ciudadesDTO),HttpStatus.OK);
     }
 
 

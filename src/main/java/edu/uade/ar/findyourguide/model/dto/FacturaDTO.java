@@ -1,6 +1,7 @@
 package edu.uade.ar.findyourguide.model.dto;
 
 
+import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class FacturaDTO {
 
     private Float montoTotalAPagar;
-    private String detalle;
+    private TipoPagoEnum detalle;
     private Date fecha;
 
 

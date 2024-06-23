@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.PagosYaRealizadosError;
 import edu.uade.ar.findyourguide.exceptions.ReservaConfirmadaError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -16,9 +17,8 @@ public class ReservadoState extends ReservaState{
 
 
     @Override
-    public void pagar(PagoEntity pago) {
-        this.reserva.setEstado(ReservaStateEnum.FINALIZADO);
-        this.reserva.cambiarEstado(new FinalizadoState(this.reserva));
+    public void pagar(PagoEntity pago) throws PagosYaRealizadosError {
+        throw new PagosYaRealizadosError("Error");
     }
 
     @Override
@@ -43,6 +43,12 @@ public class ReservadoState extends ReservaState{
     @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.RESERVADO;
+    }
+
+    @Override
+    public void finalizarReserva() {
+        this.reserva.setEstado(ReservaStateEnum.FINALIZADO);
+        this.reserva.cambiarEstado(new FinalizadoState(this.reserva));
     }
 
 }

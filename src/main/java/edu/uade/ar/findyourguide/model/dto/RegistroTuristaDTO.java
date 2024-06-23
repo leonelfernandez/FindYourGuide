@@ -1,20 +1,18 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-
+import edu.uade.ar.findyourguide.model.enums.TipoRegistroEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GuiaCompletoDTO {
+public class RegistroTuristaDTO {
 
-    private GuiaDTO guia;
-    private List<ReseniaDTO> resenias;
-    private ViajesRealizadosDTO reservas;
+    private TipoRegistroEnum tipoRegistro;
+    private TuristaDTO turista;
+
 }

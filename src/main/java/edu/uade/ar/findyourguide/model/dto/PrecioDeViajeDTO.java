@@ -1,20 +1,17 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GuiaCompletoDTO {
+public class PrecioDeViajeDTO {
 
-    private GuiaDTO guia;
-    private List<ReseniaDTO> resenias;
-    private ViajesRealizadosDTO reservas;
+    private Long guiaId;
+    private Long ciudadDestinoId;
+
 }

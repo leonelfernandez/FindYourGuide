@@ -26,5 +26,6 @@ public abstract class ReservaState {
     public abstract ReservaStateEnum getState();
 
 
+    public abstract void finalizarReserva() throws FinalizadoError;
 
 }

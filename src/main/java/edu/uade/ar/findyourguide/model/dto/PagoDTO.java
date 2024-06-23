@@ -17,7 +17,7 @@ public class PagoDTO {
 
     private Float montoTotal;
 
-    private Date fechaEmision;
+    private Date fecha;
 
     private String referencia;
 

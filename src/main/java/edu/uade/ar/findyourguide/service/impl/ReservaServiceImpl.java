@@ -15,6 +15,8 @@ import java.util.*;
 @Service
 public class ReservaServiceImpl implements IReservaService {
 
+    private final GuiaRepository guiaRepository;
+    private final FacturaRepository facturaRepository;
     private ReservaRepository reservaRepository;
 
     private PagoRepository pagoRepository;
@@ -23,18 +25,20 @@ public class ReservaServiceImpl implements IReservaService {
 
     private TarifaRepository tarifaRepository;
 
-    private Float porcentajeAnticipo = 0.10F;
+    private Float porcentajeAnticipo;
 
     private IPagoAdapter pagoAdapter;
 
-    private Float montoPenalizacion = 0.20F;
+    private Float montoPenalizacion;
+
+    private Float montoRecargoPlataforma;
 
     private ServicioRepository servicioRepository;
 
     private CiudadRepository ciudadRepository;
 
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository, IPagoAdapter pagoAdapter, ServicioRepository servicioRepository, CiudadRepository ciudadRepository) {
+    public ReservaServiceImpl(ReservaRepository reservaRepository, PagoRepository pagoRepository, ReintegroRepository reintegroRepository, TarifaRepository tarifaRepository, IPagoAdapter pagoAdapter, ServicioRepository servicioRepository, CiudadRepository ciudadRepository, GuiaRepository guiaRepository, FacturaRepository facturaRepository) {
         this.reservaRepository = reservaRepository;
         this.pagoRepository = pagoRepository;
         this.reintegroRepository = reintegroRepository;
@@ -44,6 +48,9 @@ public class ReservaServiceImpl implements IReservaService {
         this.montoPenalizacion = 0.20F;
         this.servicioRepository = servicioRepository;
         this.ciudadRepository = ciudadRepository;
+        this.guiaRepository = guiaRepository;
+        this.montoRecargoPlataforma = 0.15F;
+        this.facturaRepository = facturaRepository;
     }
 
     @Override
@@ -62,11 +69,19 @@ public class ReservaServiceImpl implements IReservaService {
         if (reservaRepository.countOverlapping(reserva.getId(), reserva.getFechaInicio(), reserva.getFechaFin(), ReservaStateEnum.PENDIENTE, ReservaStateEnum.CONFIRMADO, ReservaStateEnum.RESERVADO) > 0) {
             throw new ReservaError("El turista ya tiene una reserva en esa fecha");
         }
-        List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
-        List<ServicioEntity> filteredServiciosRepo = serviciosRepo.stream()
-                .filter(reserva.getServiciosContratados()::contains)
-                .toList();
-        reserva.setServiciosContratados(filteredServiciosRepo);
+        GuiaEntity guia = guiaRepository.findById(reserva.getGuia().getId()).orElseThrow(() -> new NoSuchElementException("Guia no existe"));
+        List<ServicioEntity> serviciosGuia = guia.getServiciosOfrecidos();
+        List<ServicioEntity> serviciosContratados = reserva.getServiciosContratados();
+        if (new HashSet<>(serviciosGuia).containsAll(serviciosContratados)) {
+            List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
+            List<ServicioEntity> filteredServiciosRepo = serviciosRepo.stream()
+                    .filter(reserva.getServiciosContratados()::contains)
+                    .toList();
+            reserva.setServiciosContratados(filteredServiciosRepo);
+        } else {
+            throw new ReservaError("El guia no ofrece todos los servicios contratados");
+        }
+        facturaRepository.save(new FacturaEntity(TipoPagoEnum.ANTICIPO, this.calcularMontoAnticipo(guia, reserva.getCiudad().getId()), reserva.getFechaReservaIniciada()));
         return reservaRepository.save(reserva);
     }
 
@@ -101,17 +116,13 @@ public class ReservaServiceImpl implements IReservaService {
     public ReservaEntity cancelarReserva(ReservaEntity reserva, Date fechaCancelacion) throws ReservaFinalizadaError, ReservaRechazadaError, CancelarError {
         try {
             List<PagoEntity> pagos = reserva.getPagos();
-            if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1) {
-                PagoEntity pago = new PagoEntity(this.calcularMontoRestante(reserva), fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION);
-                reserva.agregarPago(pago);
-                pagoRepository.save(pago);
-                this.pagoAdapter.realizarPago(this.calcularMontoRestante(reserva));
+            if (verificarFechaCancelacion(reserva, fechaCancelacion) && pagos.size() == 1 && reserva.getEstado() == ReservaStateEnum.RESERVADO) {
+                Float monto = this.calcularMontoRestante(reserva.getGuia(), reserva.getCiudad().getId()) * (1+this.montoPenalizacion);
+                facturaRepository.save(new FacturaEntity(TipoPagoEnum.PENALIZACION, monto, fechaCancelacion));
                 reserva.cancelarReserva(fechaCancelacion);
-            } else if (pagos.size() == 1 && reserva.getEstado() == ReservaStateEnum.RESERVADO) {
-                PagoEntity pago = new PagoEntity(this.calcularMontoRestante(reserva) * this.montoPenalizacion, fechaCancelacion, reserva, TipoPagoEnum.PENALIZACION);
-                reserva.agregarPago(pago);
-                pagoRepository.save(pago);
-                this.pagoAdapter.realizarPago(this.calcularMontoTotal(reserva) * this.montoPenalizacion);
+            } else if ( pagos.size() == 1 && reserva.getEstado() == ReservaStateEnum.RESERVADO){
+                Float monto = this.calcularMontoRestante(reserva.getGuia(), reserva.getCiudad().getId()) * this.montoPenalizacion;
+                facturaRepository.save(new FacturaEntity(TipoPagoEnum.PENALIZACION, monto, fechaCancelacion));
                 reserva.cancelarReserva(fechaCancelacion);
             } else {
                 reserva.cancelarReserva(fechaCancelacion);
@@ -135,7 +146,7 @@ public class ReservaServiceImpl implements IReservaService {
         try {
             if (reserva.getEstado() == ReservaStateEnum.CONFIRMADO) {
                 PagoEntity pago = reserva.getPagos().getFirst();
-                ReintegroEntity reintegro = new ReintegroEntity(this.calcularMontoAnticipo(reserva), fechaCancelacion, reserva.getPagos().getFirst());
+                ReintegroEntity reintegro = new ReintegroEntity(this.calcularMontoAnticipo(reserva.getGuia(), reserva.getCiudad().getId()), fechaCancelacion, reserva.getPagos().getFirst());
                 reintegroRepository.save(reintegro);
                 pago.getReintegro().add(reintegro);
                 pagoRepository.save(pago);
@@ -158,19 +169,21 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public ReservaEntity pagar(PagoEntity pago) throws PagosYaRealizadosError, AnticipoPagadoError, ReservaFinalizadaError, ReservaRechazadaError {
         ReservaEntity reservaGuardada = reservaRepository.findById(pago.getReserva().getId()).orElseThrow(() -> new NoSuchElementException("Reserva no existe"));
-        List<PagoEntity> pagosRealizados = reservaGuardada.getPagos();
-        if (pagosRealizados.size() == 2)
-            throw new PagosYaRealizadosError("Pagos ya realizados para esta reserva");
-        if (pagosRealizados.isEmpty())
+        List<FacturaEntity> facturas = facturaRepository.findAll().stream().filter(factura -> Objects.equals(factura.getId(), pago.getFactura().getId())).toList();
+        if (facturas.size() == 1 && pago.getFactura().getDetalle() == TipoPagoEnum.ANTICIPO) {
             this.pagarAnticipo(reservaGuardada);
-        else
+            reservaGuardada.pagar(pago);
+        } else if(facturas.size() == 1 && pago.getFactura().getDetalle() == TipoPagoEnum.PENALIZACION) {
             this.pagarRestante(reservaGuardada);
+        } else if (pago.getFactura().getDetalle() == TipoPagoEnum.TOTAL && reservaGuardada.getEstado() == ReservaStateEnum.FINALIZADO){
+            this.pagarRestante(reservaGuardada);
+        }
 
-        reservaGuardada.pagar(pago);
         reservaGuardada.agregarPago(pago);
         return reservaRepository.save(reservaGuardada);
 
     }
+
 
     @Override
     public ReservaEntity confirmarReserva(ReservaEntity reserva) throws PagoNoRealizadoError, ReservaConfirmadaError, ReservaFinalizadaError, ReservaRechazadaError {
@@ -179,31 +192,34 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     private void pagarAnticipo(ReservaEntity reserva) {
-        this.pagoAdapter.realizarPago(this.calcularMontoAnticipo(reserva));
+        this.pagoAdapter.realizarPago(this.calcularMontoAnticipo(reserva.getGuia(), reserva.getCiudad().getId()));
     }
 
     private void pagarRestante(ReservaEntity reserva) {
-        this.pagoAdapter.realizarPago(this.calcularMontoTotal(reserva) - this.calcularMontoAnticipo(reserva));
+        this.pagoAdapter.realizarPago(this.calcularMontoRestante(reserva.getGuia(), reserva.getCiudad().getId()) - this.calcularMontoAnticipo(reserva.getGuia(), reserva.getCiudad().getId()));
     }
 
     private Float getMontoAReintegrar(PagoEntity pago) {
         return pago.getMontoTotal() * this.porcentajeAnticipo;
     }
     @Override
-    public Float calcularMontoTotal(ReservaEntity reserva) {
-        Long guiaId = reserva.getGuia().getId();
-        Long ciudadID = reserva.getCiudad().getId();
-        return reservaRepository.findMontoTotalReserva(ciudadID, guiaId);
+    public Float calcularMontoTotal(GuiaEntity guia, Long ciudadDestinoId) {
+        return tarifaRepository.findMontoTotalReserva(guia.getId(), ciudadDestinoId) * (1.0F + this.montoRecargoPlataforma);
     }
 
     @Override
-    public Float calcularMontoRestante(ReservaEntity reserva) {
-        return calcularMontoTotal(reserva) - calcularMontoAnticipo(reserva);
+    public Float calcularComisionDePlataforma(GuiaEntity guia, Long ciudadDestinoId) {
+        return tarifaRepository.findMontoTotalReserva(guia.getId(), ciudadDestinoId) * this.montoRecargoPlataforma;
     }
 
     @Override
-    public Float calcularMontoAnticipo(ReservaEntity reserva) {
-        return calcularMontoTotal(reserva) * porcentajeAnticipo;
+    public Float calcularMontoRestante(GuiaEntity guia, Long ciudadDestinoId) {
+        return tarifaRepository.findMontoTotalReserva(guia.getId(), ciudadDestinoId) - (tarifaRepository.findMontoTotalReserva(guia.getId(), ciudadDestinoId) * porcentajeAnticipo);
+    }
+
+    @Override
+    public Float calcularMontoAnticipo(GuiaEntity guia, Long ciudadDestinoId) {
+        return tarifaRepository.findMontoTotalReserva(guia.getId(), ciudadDestinoId) * porcentajeAnticipo;
     }
 
     @Override
@@ -219,6 +235,22 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public Iterable<CiudadEntity> getAllCiudadesIn(List<Long> ids) {
         return ciudadRepository.getAllCiudadesById(ids);
+    }
+
+    @Override
+    public ReservaEntity finalizarReserva(ReservaEntity reserva) throws FinalizadoError {
+        reserva.finalizarReserva();
+        ReservaEntity reservaGuardada = reservaRepository.save(reserva);
+        ReservaEntity resultado = reservaRepository.findById(reservaGuardada.getId()).get();
+        if (resultado.getEstado() == ReservaStateEnum.FINALIZADO) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(resultado.getFechaFin());
+            calendar.add(Calendar.DATE, 5);
+            Date newFechaFin = calendar.getTime();
+            facturaRepository.save(new FacturaEntity(TipoPagoEnum.TOTAL, this.calcularMontoRestante(resultado.getGuia(), resultado.getCiudad().getId()) * (1 + this.montoRecargoPlataforma), newFechaFin));
+        }
+        return reservaRepository.save(reserva);
+
     }
 
 }

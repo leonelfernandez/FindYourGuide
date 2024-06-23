@@ -1,9 +1,6 @@
 package edu.uade.ar.findyourguide.model.entity;
 
-import edu.uade.ar.findyourguide.model.adapters.IPagoAdapter;
-import edu.uade.ar.findyourguide.model.adapters.impl.Stripe;
 import edu.uade.ar.findyourguide.model.enums.TipoPagoEnum;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +23,7 @@ public class PagoEntity {
     private Long id;
     private Float montoTotal;
     @Temporal(TemporalType.DATE)
-    private Date fechaEmision;
+    private Date fecha;
 
     @Enumerated(EnumType.STRING)
     private TipoPagoEnum referencia;
@@ -42,9 +39,9 @@ public class PagoEntity {
     private FacturaEntity factura;
 
 
-    public PagoEntity(Float montoTotal, Date fechaEmision, ReservaEntity reserva, TipoPagoEnum referencia) {
+    public PagoEntity(Float montoTotal, Date fecha, ReservaEntity reserva, TipoPagoEnum referencia) {
         this.montoTotal = montoTotal;
-        this.fechaEmision = fechaEmision;
+        this.fecha = fecha;
         this.reserva = reserva;
         this.referencia = referencia;
     }

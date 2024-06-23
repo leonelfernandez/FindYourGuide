@@ -1,6 +1,8 @@
 package edu.uade.ar.findyourguide.service.impl;
 
 import edu.uade.ar.findyourguide.model.entity.*;
+import edu.uade.ar.findyourguide.model.enums.TipoRegistroEnum;
+import edu.uade.ar.findyourguide.model.strategy.IRegisterStrategy;
 import edu.uade.ar.findyourguide.repository.GuiaRepository;
 import edu.uade.ar.findyourguide.repository.IdiomaRepository;
 import edu.uade.ar.findyourguide.repository.ServicioRepository;
@@ -9,6 +11,7 @@ import edu.uade.ar.findyourguide.service.IAuthenticationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,16 +20,22 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     private IdiomaRepository idiomaRepository;
     private ServicioRepository servicioRepository;
     private TuristaRepository turistaRepository;
+    private final Map<TipoRegistroEnum, IRegisterStrategy> registroPorTipo;
 
-    public AuthenticationServiceImpl(GuiaRepository guiaRepository, IdiomaRepository idiomaRepository, ServicioRepository servicioRepository, TuristaRepository turistaRepository) {
+
+    public AuthenticationServiceImpl(GuiaRepository guiaRepository, IdiomaRepository idiomaRepository, ServicioRepository servicioRepository, TuristaRepository turistaRepository, Map<TipoRegistroEnum, IRegisterStrategy> registroPorTipo) {
         this.guiaRepository = guiaRepository;
         this.idiomaRepository = idiomaRepository;
         this.servicioRepository = servicioRepository;
         this.turistaRepository = turistaRepository;
+        this.registroPorTipo = registroPorTipo;
     }
 
     @Override
-    public GuiaEntity registrarGuia(GuiaEntity guiaEntity) {
+    public GuiaEntity registrarGuia(GuiaEntity guiaEntity, TipoRegistroEnum tipoDeRegistro) {
+        IRegisterStrategy registerStrategy = this.registroPorTipo.get(tipoDeRegistro);
+        registerStrategy.registrarse(guiaEntity);
+
         List<IdiomaEntity> idiomasRepo = idiomaRepository.findAll();
         List<ServicioEntity> serviciosRepo = servicioRepository.findAll();
 
@@ -44,7 +53,9 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     @Override
-    public TuristaEntity registrarTurista(TuristaEntity turista) {
+    public TuristaEntity registrarTurista(TuristaEntity turista, TipoRegistroEnum tipoDeRegistro) {
+        IRegisterStrategy registerStrategy = this.registroPorTipo.get(tipoDeRegistro);
+        registerStrategy.registrarse(turista);
         return turistaRepository.save(turista);
     }
 

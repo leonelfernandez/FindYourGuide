@@ -1,20 +1,18 @@
 package edu.uade.ar.findyourguide.model.dto;
 
-
+import edu.uade.ar.findyourguide.util.ReservaMessages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GuiaCompletoDTO {
+public class ReservaCanceladaDTO {
 
-    private GuiaDTO guia;
-    private List<ReseniaDTO> resenias;
-    private ViajesRealizadosDTO reservas;
+    private String mensaje;
+    private ReservaDTO reserva;
+
 }
