@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MontoAPagarReservaDTO {
 
-    private Long reservaId;
+    private Long ciudadDestinoId;
     private Float montoAPagarAnticipo;
     private Float montoAPagarRestante;
+    private Float montoAPagarComisionPlataforma;
     private Float montoAPagarTotal;
 
 

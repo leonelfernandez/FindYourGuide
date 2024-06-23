@@ -21,4 +21,6 @@ public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
     @Query("SELECT 1 FROM ReservaEntity r WHERE r.id = :id AND (:fechaCancelacion BETWEEN r.fechaInicio AND r.fechaFin)")
     public Integer fechaCancelacionEnViaje(Long id, Date fechaCancelacion);
 
+    @Query("SELECT r FROM ReservaEntity r WHERE r.guia.id = :id AND r.estado = 'FINALIZADA'")
+    public Iterable<ReservaEntity> getReservasFinalizadasByGuia(Long id);
 }

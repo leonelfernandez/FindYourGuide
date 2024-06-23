@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.FinalizadoError;
 import edu.uade.ar.findyourguide.exceptions.PagoNoRealizadoError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReintegroEntity;
@@ -42,6 +43,10 @@ public class PendienteState extends ReservaState{
         return ReservaStateEnum.PENDIENTE;
     }
 
+    @Override
+    public void finalizarReserva() throws FinalizadoError {
+        throw new FinalizadoError("Error");
+    }
 
 
 }

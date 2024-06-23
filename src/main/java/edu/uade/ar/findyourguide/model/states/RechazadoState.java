@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.FinalizadoError;
 import edu.uade.ar.findyourguide.exceptions.ReservaRechazadaError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -39,5 +40,10 @@ public class RechazadoState extends ReservaState{
     @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.RECHAZADO;
+    }
+
+    @Override
+    public void finalizarReserva() throws FinalizadoError {
+        throw new FinalizadoError("Error");
     }
 }

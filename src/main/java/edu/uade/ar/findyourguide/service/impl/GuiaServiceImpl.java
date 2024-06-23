@@ -1,8 +1,7 @@
 package edu.uade.ar.findyourguide.service.impl;
 
-import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
-import edu.uade.ar.findyourguide.model.entity.IdiomaEntity;
-import edu.uade.ar.findyourguide.model.entity.ServicioEntity;
+import edu.uade.ar.findyourguide.model.entity.*;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.repository.GuiaRepository;
 import edu.uade.ar.findyourguide.repository.IdiomaRepository;
 import edu.uade.ar.findyourguide.repository.ServicioRepository;
@@ -101,6 +100,16 @@ public class GuiaServiceImpl implements IGuiaService {
     public List<GuiaEntity> findByServicios(List<Long> idServicios) {
         return StreamSupport.stream(guiaRepository.findByServicios(idServicios).spliterator(), false)
                 .toList();
+    }
+
+    @Override
+    public Optional<GuiaEntity> findByEmailAndPassword(String email, String password) {
+        return guiaRepository.findByEmailAndPassword(email, password);
+    }
+
+    @Override
+    public List<CiudadEntity> findViajesRealizados(GuiaEntity guia) {
+        return StreamSupport.stream(guiaRepository.findViajesRealizados(guia.getId(), ReservaStateEnum.FINALIZADO).spliterator(), false).toList();
     }
 
     @Override

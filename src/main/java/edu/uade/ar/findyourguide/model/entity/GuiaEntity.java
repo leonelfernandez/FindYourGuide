@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@ToString
 @SuperBuilder
 public class GuiaEntity extends UsuarioEntity {
     private Float puntajePromedio = 0.0F;

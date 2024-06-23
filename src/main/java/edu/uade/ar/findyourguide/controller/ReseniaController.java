@@ -1,9 +1,7 @@
 package edu.uade.ar.findyourguide.controller;
 
 import edu.uade.ar.findyourguide.mappers.Mapper;
-import edu.uade.ar.findyourguide.model.dto.NotifReseniaDTO;
-import edu.uade.ar.findyourguide.model.dto.NotifTuristaReseniaDTO;
-import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
+import edu.uade.ar.findyourguide.model.dto.*;
 import edu.uade.ar.findyourguide.model.dto.ReseniaDTO;
 import edu.uade.ar.findyourguide.model.entity.ReseniaEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
@@ -33,6 +31,7 @@ public class ReseniaController {
     private INotificacionService notificacionService;
 
     private IGuiaService guiaService;
+
 
 
     public ReseniaController(IReseniaService reseniaService, Mapper<ReseniaEntity, ReseniaDTO> reseniaMapper, ITuristaService turistaService, INotificacionService notificacionService, IGuiaService guiaService) {

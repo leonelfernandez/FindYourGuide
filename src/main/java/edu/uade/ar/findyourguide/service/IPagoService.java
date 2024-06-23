@@ -21,5 +21,4 @@ public interface IPagoService {
 
     public boolean isExists(Long id);
 
-
 }

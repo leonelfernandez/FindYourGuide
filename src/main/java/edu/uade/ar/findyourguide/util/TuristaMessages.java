@@ -15,4 +15,8 @@ public class TuristaMessages {
         return "Califica tu experiencia con FindYourGuide";
     }
 
+    public static String turistaCreadoConExito() {
+        return "Turista creado con exito.";
+    }
+
 }

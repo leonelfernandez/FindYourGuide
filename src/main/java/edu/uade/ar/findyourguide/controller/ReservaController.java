@@ -3,13 +3,11 @@ package edu.uade.ar.findyourguide.controller;
 import edu.uade.ar.findyourguide.exceptions.*;
 import edu.uade.ar.findyourguide.mappers.Mapper;
 import edu.uade.ar.findyourguide.model.dto.*;
+import edu.uade.ar.findyourguide.model.entity.GuiaEntity;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
 import edu.uade.ar.findyourguide.model.enums.TipoNotificacionEnum;
-import edu.uade.ar.findyourguide.service.IChatService;
-import edu.uade.ar.findyourguide.service.INotificacionService;
-import edu.uade.ar.findyourguide.service.IPagoService;
-import edu.uade.ar.findyourguide.service.IReservaService;
+import edu.uade.ar.findyourguide.service.*;
 import edu.uade.ar.findyourguide.util.ReservaMessages;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -29,14 +27,16 @@ public class ReservaController {
     private Mapper<PagoEntity, PagoDTO> pagoMapper;
     private IChatService chatService;
     private INotificacionService notificacionService;
+    private IGuiaService guiaService;
 
-    public ReservaController(IReservaService reservaService, IPagoService pagoService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, Mapper<PagoEntity, PagoDTO> pagoMapper, IChatService chatService, INotificacionService notificacionService) {
+    public ReservaController(IReservaService reservaService, IPagoService pagoService, Mapper<ReservaEntity, ReservaDTO> reservaMapper, Mapper<PagoEntity, PagoDTO> pagoMapper, IChatService chatService, INotificacionService notificacionService, IGuiaService guiaService) {
         this.reservaService = reservaService;
         this.pagoService = pagoService;
         this.reservaMapper = reservaMapper;
         this.pagoMapper = pagoMapper;
         this.chatService = chatService;
         this.notificacionService = notificacionService;
+        this.guiaService = guiaService;
     }
 
     @PostMapping(path = "/reservas")
@@ -110,14 +110,14 @@ public class ReservaController {
     }
 
     @PatchMapping(path = "/reservas/cancelar/{id}")
-    public ResponseEntity<ReservaDTO> cancelarReserva(@PathVariable("id") Long id,
+    public ResponseEntity<ReservaCanceladaDTO> cancelarReserva(@PathVariable("id") Long id,
                                                       @RequestBody CancelacionDateDTO cancelacionDateDTO
     ) {
         try {
             ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
             Date fechaCancelacion = cancelacionDateDTO.getFechaCancelacion();
             ReservaEntity reservaCancelada = reservaService.cancelarReserva(reserva, fechaCancelacion);
-            return new ResponseEntity<>(reservaMapper.mapTo(reservaCancelada),
+            return new ResponseEntity<>(new ReservaCanceladaDTO(ReservaMessages.reservaCancelada(),reservaMapper.mapTo(reservaCancelada)),
                     HttpStatus.OK);
         } catch(EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -143,44 +143,30 @@ public class ReservaController {
         }
     }
 
-    @GetMapping(path = "/reservas/montos/{id}")
-    public ResponseEntity<MontoAPagarReservaDTO> getMontoAPagar(@PathVariable("id") Long id) { //Modificar para no persistir la info y poder obtener el monto a pagar
+    @GetMapping(path = "/reservas/montos")
+    public ResponseEntity<MontoAPagarReservaDTO> simularPrecioReserva(@RequestBody PrecioDeViajeDTO precioViajeDTO) { //Modificar para no persistir la info y poder obtener el monto a pagar
         try {
-            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
-            Float montoTotal = reservaService.calcularMontoTotal(reserva);
-            Float montoAnticipo = reservaService.calcularMontoAnticipo(reserva);
-            Float montoRestante = reservaService.calcularMontoRestante(reserva);
-            return new ResponseEntity<>(new MontoAPagarReservaDTO(reserva.getId(), montoAnticipo, montoRestante, montoTotal), HttpStatus.OK);
+            Long guiaId = precioViajeDTO.getGuiaId();
+            Long ciudadDestinoId = precioViajeDTO.getCiudadDestinoId();
+            GuiaEntity guia = guiaService.findById(guiaId).orElseThrow(() -> new EntityNotFoundException("Guia no encontrado"));
+            Float montoTotal = reservaService.calcularMontoTotal(guia, ciudadDestinoId);
+            Float montoAnticipo = reservaService.calcularMontoAnticipo(guia, ciudadDestinoId);
+            Float montoRestante = reservaService.calcularMontoRestante(guia, ciudadDestinoId);
+            Float montoComisionPlataforma = reservaService.calcularComisionDePlataforma(guia, ciudadDestinoId);
+            return new ResponseEntity<>(new MontoAPagarReservaDTO(ciudadDestinoId, montoAnticipo, montoRestante, montoComisionPlataforma, montoTotal), HttpStatus.OK);
         } catch(EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-
-    @GetMapping(path = "/reservas/facturas/{id}")
-    public ResponseEntity<FacturaDTO> generarFactura(@PathVariable("id") Long id) {
-//        try {
-//            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
-//            reservaService.generarFactura(reserva);
-//            Float montoTotal = reservaService.calcularMontoTotal(reserva);
-//            Float montoAnticipo = reservaService.calcularMontoAnticipo(reserva);
-//            Float montoRestante = reservaService.calcularMontoRestante(reserva);
-//            return new ResponseEntity<>(new FacturaDTO(montoRestante, reserva.getCiudad().getNombre(), reserva.getFechaFin()), HttpStatus.OK);
-//        } catch(EntityNotFoundException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-        return null;
-    }
-
-
     @PostMapping(path = "/reservas/pagos")
-    public ResponseEntity<NotifReservaDTO> pagarReserva(@RequestBody PagoDTO pagoDTO) {
+    public ResponseEntity<ReservaDTO> pagarReserva(@RequestBody PagoDTO pagoDTO) {
         try {
             PagoEntity pago = pagoMapper.mapFrom(pagoDTO);
-            PagoEntity pagoGuardado = pagoService.save(pago); //Guardo el pago
+            PagoEntity pagoGuardado = pagoService.save(pago);//Guardo el pago
             ReservaEntity reservaGuardada = reservaService.pagar(pagoGuardado);
-            notificacionService.enviarNotificacion(reservaGuardada.getGuia(), ReservaMessages.reservaCreadaNotif(reservaGuardada.getTurista()), TipoNotificacionEnum.PUSH_NOTIFICATION);
-            return new ResponseEntity<>(new NotifReservaDTO(ReservaMessages.reservaCreadaNotif(reservaGuardada.getTurista()), reservaMapper.mapTo(reservaGuardada)), HttpStatus.CREATED);
+            //notificacionService.enviarNotificacion(reservaGuardada.getGuia(), ReservaMessages.reservaCreadaNotif(reservaGuardada.getTurista()), TipoNotificacionEnum.PUSH_NOTIFICATION);
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaGuardada), HttpStatus.CREATED);
         } catch(EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PagosYaRealizadosError | AnticipoPagadoError | ReservaFinalizadaError | ReservaRechazadaError |
@@ -205,6 +191,18 @@ public class ReservaController {
         }
     }
 
+    @PatchMapping(path = "/reservas/finalizar/{id}")
+    public ResponseEntity<ReservaDTO> finalizarReserva(@PathVariable("id") Long id) {
+        try {
+            ReservaEntity reserva = reservaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+            ReservaEntity reservaGuardada = reservaService.finalizarReserva(reserva);
+            return new ResponseEntity<>(reservaMapper.mapTo(reservaGuardada), HttpStatus.OK);
+        } catch(EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (FinalizadoError e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
 
 
 

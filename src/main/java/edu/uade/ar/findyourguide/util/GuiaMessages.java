@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class GuiaMessages {
 
     public static String credencialValidada() {
-        return "Su credencial ha sido validada.";
+        return "Su credencial ha sido validada. Puede comenzar a ofrecer, servicios.";
     }
 
 

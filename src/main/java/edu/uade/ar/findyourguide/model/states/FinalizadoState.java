@@ -1,5 +1,6 @@
 package edu.uade.ar.findyourguide.model.states;
 
+import edu.uade.ar.findyourguide.exceptions.FinalizadoError;
 import edu.uade.ar.findyourguide.exceptions.ReservaFinalizadaError;
 import edu.uade.ar.findyourguide.model.entity.PagoEntity;
 import edu.uade.ar.findyourguide.model.entity.ReservaEntity;
@@ -37,5 +38,10 @@ public class FinalizadoState extends ReservaState{
     @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.FINALIZADO;
+    }
+
+    @Override
+    public void finalizarReserva() throws FinalizadoError {
+        throw new FinalizadoError("Error");
     }
 }

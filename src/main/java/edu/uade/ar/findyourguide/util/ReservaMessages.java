@@ -30,4 +30,9 @@ public class ReservaMessages {
     public static String chatCreado() {
         return "Se ha creado un chat correspondiente a su reserva.";
     }
+
+    public static String reservaCancelada() {
+        return "La reserva ha sido cancelada.";
+    }
+
 }

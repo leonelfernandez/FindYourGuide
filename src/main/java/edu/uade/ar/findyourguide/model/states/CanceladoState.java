@@ -36,9 +36,15 @@ public class CanceladoState extends ReservaState{
         throw new ReservaRechazadaError("No se puede rechazar una reserva cancelada");
     }
 
+    @Override
+    public void finalizarReserva() throws FinalizadoError {
+        throw new FinalizadoError("Error");
+    }
 
     @Override
     public ReservaStateEnum getState() {
         return ReservaStateEnum.CANCELADO;
     }
+
+
 }

@@ -1,6 +1,8 @@
 package edu.uade.ar.findyourguide.service.impl;
 
+import edu.uade.ar.findyourguide.model.entity.CiudadEntity;
 import edu.uade.ar.findyourguide.model.entity.TuristaEntity;
+import edu.uade.ar.findyourguide.model.enums.ReservaStateEnum;
 import edu.uade.ar.findyourguide.repository.TuristaRepository;
 import edu.uade.ar.findyourguide.service.ITuristaService;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -65,5 +68,10 @@ public class TuristaServiceImpl implements ITuristaService {
     public Boolean findByTrofeos(Long id) {
         return !StreamSupport.stream(turistaRepository.getTuristasConTrofeo(id).spliterator(), false)
                 .toList().isEmpty();
+    }
+
+    @Override
+    public List<CiudadEntity> findViajesRealizados(TuristaEntity turista) {
+        return StreamSupport.stream(turistaRepository.findViajesRealizados(turista.getId(), ReservaStateEnum.FINALIZADO).spliterator(), false).toList();
     }
 }
