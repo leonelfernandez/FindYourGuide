@@ -21,4 +21,6 @@ public interface IReseniaService {
 
 
     public Iterable<ReseniaEntity> getReseniasByGuia(Long id);
+
+    public Boolean validarTuristaHizoElViaje(Long idTurista, Long idGuia);
 }

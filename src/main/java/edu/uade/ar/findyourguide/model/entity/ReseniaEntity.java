@@ -3,8 +3,6 @@ package edu.uade.ar.findyourguide.model.entity;
 import edu.uade.ar.findyourguide.model.observer.IObservable;
 import edu.uade.ar.findyourguide.model.observer.IObserver;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

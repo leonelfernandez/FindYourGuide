@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ReseniaServiceImpl implements IReseniaService {
@@ -22,7 +23,8 @@ public class ReseniaServiceImpl implements IReseniaService {
 
     private TrofeoTuristaObserver trofeoTuristaObserver;
 
-    public ReseniaServiceImpl(ReseniaRepository reseniaRepository, TrofeoGuiaObserver trofeoGuiaObserver, TrofeoTuristaObserver trofeoTuristaObserver) {
+
+    public ReseniaServiceImpl(ReseniaRepository reseniaRepository, TrofeoGuiaObserver trofeoGuiaObserver, TrofeoTuristaObserver trofeoTuristaObserver, ReservaServiceImpl reservaService) {
         this.reseniaRepository = reseniaRepository;
         this.trofeoGuiaObserver = trofeoGuiaObserver;
         this.trofeoTuristaObserver = trofeoTuristaObserver;
@@ -73,5 +75,10 @@ public class ReseniaServiceImpl implements IReseniaService {
     @Override
     public Iterable<ReseniaEntity> getReseniasByGuia(Long id) {
         return reseniaRepository.getReseniasByGuia(id);
+    }
+
+    @Override
+    public Boolean validarTuristaHizoElViaje(Long idTurista, Long idGuia) {
+        return !StreamSupport.stream(reseniaRepository.validarTuristaHizoElViaje(idTurista, idGuia).spliterator(), false).toList().isEmpty();
     }
 }
