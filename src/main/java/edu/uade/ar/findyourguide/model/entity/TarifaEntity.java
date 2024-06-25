@@ -25,7 +25,7 @@ public class TarifaEntity {
     private Float precio;
 
     @ManyToOne
-    @JoinColumn(name = "ciudad_id", unique = true)
+    @JoinColumn(name = "ciudad_id")
     private CiudadEntity ciudad;
 
     @Transient

@@ -55,9 +55,9 @@ public class ReseniaController {
     @PostMapping(path = "/resenias")
     public ResponseEntity<NotifReseniaDTO> crearResenia(@RequestBody ReseniaDTO reseniaDTO) {
         ReseniaEntity resenia = reseniaMapper.mapFrom(reseniaDTO);
-        ReseniaEntity reseniaEntityGuardado = reseniaService.save(resenia);
-        if (!reseniaService.validarTuristaHizoElViaje(resenia.getTurista().getId(), resenia.getGuia().getId()))
+        if (reseniaService.validarTuristaHizoElViaje(resenia.getTurista().getId(), resenia.getGuia().getId()))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ReseniaEntity reseniaEntityGuardado = reseniaService.save(resenia);
 
         if (guiaService.findByTrofeos(reseniaEntityGuardado.getGuia().getId())) {
             notificacionService.enviarNotificacion(reseniaEntityGuardado.getGuia(), ReseniaMessages.trofeoObtenido(), TipoNotificacionEnum.PUSH_NOTIFICATION);

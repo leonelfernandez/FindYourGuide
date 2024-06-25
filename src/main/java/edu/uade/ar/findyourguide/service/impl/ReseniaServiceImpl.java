@@ -77,8 +77,11 @@ public class ReseniaServiceImpl implements IReseniaService {
         return reseniaRepository.getReseniasByGuia(id);
     }
 
+    //Cantidad de resenias hechas a guia por parte del turista. Si es la misma cantidad no puede generar una nueva, si es menor si puede.
     @Override
     public Boolean validarTuristaHizoElViaje(Long idTurista, Long idGuia) {
-        return !StreamSupport.stream(reseniaRepository.validarTuristaHizoElViaje(idTurista, idGuia).spliterator(), false).toList().isEmpty();
+        List<ReseniaEntity> reseniasTurista = StreamSupport.stream(reseniaRepository.getReseniasByTurista(idTurista).spliterator(), false).toList();
+        return StreamSupport.stream(reseniaRepository.validarTuristaHizoElViaje(idTurista, idGuia).spliterator(), false).toList().size() ==
+                reseniasTurista.stream().filter(r -> r.getGuia().getId().equals(idGuia)).toList().size();
     }
 }
